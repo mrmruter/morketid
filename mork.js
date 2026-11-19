@@ -131,10 +131,11 @@
       if (g.length === 1) return g[0].length <= 4 ? ('000' + g[0]).slice(-4) : g[0].slice(0, 4);
       return ('0' + g[0]).slice(-2) + ('0' + g[1]).slice(-2);
     }
-    if (kind === 'kw-kode') {                              // "83,9 7", "84 kW / kode 7" -> "84-7"
-      var n = s.replace(/,/g, '.').match(/\d+(?:\.\d+)?/g);
-      if (!n || n.length < 2) return '';
-      return Math.round(parseFloat(n[0])) + '-' + parseInt(n[n.length - 1], 10);
+    if (kind === 'kw-dato') {                              // "84 0110", "83,9 kW 1.10.2026" -> "84-0110"
+      var m = s.match(/^\D*(\d+(?:[.,]\d+)?)(.*)$/);
+      if (!m) return '';
+      var d = norm('dato', m[2]);
+      return d ? Math.round(parseFloat(m[1].replace(',', '.'))) + '-' + d : '';
     }
     return s.trim().toUpperCase();
   }
