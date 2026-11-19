@@ -1,0 +1,112 @@
+/* Mørketid as a teletext page: 40 columns, eight colours, mosaic graphics, coloured keys for sub-pages. */
+:root { --k: #000; --w: #fff; --y: #ff0; --c: #0ff; --g: #0f0; --r: #f22; --m: #f0f; --b: #00f;
+        --mono: Consolas, "Lucida Console", "Cascadia Mono", ui-monospace, Menlo, monospace; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #000; }
+html { -webkit-text-size-adjust: 100%; }
+body { color: var(--w); font: 700 min(20px, calc((100vw - 24px) / 23.2))/1.3 var(--mono); font-variant-ligatures: none; }
+.screen { width: 40.6ch; max-width: 100%; margin: 0 auto; padding: 2.2em 0 3em; }
+p, ol, ul, dl { margin: 0 0 1.3em; }
+h1, h2, h3 { font: inherit; margin: 0; }
+h2 { color: var(--y); margin-bottom: .65em; }
+a { color: inherit; }
+a:hover { background: var(--w); color: #000; text-decoration: none; }
+:focus-visible { outline: 2px solid var(--w); outline-offset: 2px; }
+::selection { background: var(--y); color: #000; }
+
+.y { color: var(--y); } .c { color: var(--c); } .g { color: var(--g); } .r { color: var(--r); } .m { color: var(--m); }
+.row { display: flex; justify-content: space-between; gap: 1ch; white-space: pre; }
+.row a { text-decoration: none; }
+
+/* Header band with double-height title */
+.band { background: var(--b); color: var(--y); height: 2.6em; margin: .4em 0 1.3em; padding: 0 1ch; overflow: hidden; }
+.band h1 { display: inline-block; transform: scaleY(2); transform-origin: 0 0; white-space: nowrap; }
+.band > span { float: right; color: var(--w); line-height: 2.6em; }
+
+/* Today as a strip: an SVG at mosaic resolution (2 x 3 pixels per character, 2 character rows) */
+.sol-t { margin-bottom: .4em; }
+.sky { height: 2.6em; margin: 0; }
+.sky svg { display: block; width: 100%; height: 100%; }
+.sky .day { fill: var(--y); }
+.sky .civ { fill: var(--r); }
+.sky .nau { fill: var(--b); }
+.sky .mk { fill: var(--w); }
+.axis { margin: .2em 0 .65em; }
+.legend span { margin-right: 2ch; }
+.sw { display: inline-block; width: 1ch; height: .8em; vertical-align: -.05em; margin-right: .6ch; }
+.sw.y { background: var(--y); } .sw.r { background: var(--r); } .sw.b { background: var(--b); }
+
+/* Sub-pages: all visible without JS, one at a time with it */
+.paged .sub { display: none; }
+.paged .sub.on { display: block; }
+.sub + .sub { margin-top: 2.6em; }
+.paged .sub + .sub { margin-top: 0; }
+
+/* Stage track */
+.tr { list-style: none; padding: 0; }
+.tr li { display: flex; justify-content: space-between; gap: 1ch; }
+.tr .gate { color: var(--c); padding-left: 3ch; justify-content: flex-start; }
+.tr .done { color: var(--w); }
+.tr .open { color: var(--g); }
+.x { display: inline-block; height: 1em; vertical-align: -.15em; background: var(--r); }
+
+/* Download */
+.file { display: block; background: var(--c); color: #000; text-decoration: none; padding: 0 1ch; }
+.file:hover, .file:focus-visible { background: var(--y); color: #000; outline: none; }
+.fmeta { color: var(--c); display: block; margin: .2em 0 1.3em; }
+
+/* Steps and prompts */
+ol.s { list-style: none; padding: 0; }
+ol.s > li { margin-bottom: .9em; padding-left: 4ch; position: relative; }
+ol.s > li > .no { position: absolute; left: 0; color: var(--y); }
+ul.d { list-style: none; padding: 0; }
+ul.d > li { margin-bottom: .9em; padding-left: 2ch; position: relative; }
+ul.d > li::before { content: "\25A0"; position: absolute; left: 0; color: var(--y); }
+.prompt { display: block; color: var(--c); margin-top: .2em; }
+.copy { font: inherit; background: none; border: 0; padding: 0; color: var(--m); cursor: pointer; }
+.copy:hover { background: var(--m); color: #000; }
+code, kbd { font: inherit; color: var(--c); }
+.box { background: var(--b); color: var(--w); padding: .65em 1ch; margin: 0 0 1.3em; }
+.box b { color: var(--y); }
+
+/* Rules */
+dl.ru { display: grid; grid-template-columns: 7ch minmax(0, 1fr); gap: .5em 1ch; }
+dl.ru dt { color: var(--y); }
+dl.ru dd { margin: 0; }
+
+/* Coloured keys */
+.keys { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 1.3em; }
+.keys:empty { display: none; }
+.keys button { font: inherit; border: 0; padding: 0; cursor: pointer; background: none; text-align: left; }
+.keys button:nth-child(1) { color: var(--r); } .keys button:nth-child(2) { color: var(--g); }
+.keys button:nth-child(3) { color: var(--y); } .keys button:nth-child(4) { color: var(--c); }
+.keys button[aria-current="page"] span { text-decoration: underline; text-underline-offset: 3px; }
+.keys button:hover, .keys button:focus-visible { background: currentColor; outline: none; }
+.keys button:hover span, .keys button:focus-visible span { color: #000; }
+
+.foot { margin-top: 1.3em; }
+.ghost { color: #000; }
+
+/* Gate: "GÅ TIL SIDE" entry */
+form.gate { margin: 0 0 1.3em; }
+form.gate .q { margin-bottom: .65em; }
+form.gate .entry { display: flex; gap: 1ch; align-items: baseline; flex-wrap: wrap; }
+form.gate label { color: var(--c); }
+form.gate input { font: inherit; width: 12ch; background: #000; color: var(--y); border: 0; border-bottom: 2px solid var(--c);
+                  padding: 0 .5ch; border-radius: 0; caret-color: var(--y); }
+form.gate input:focus { outline: none; border-bottom-color: var(--y); }
+form.gate input::placeholder { color: #555; }
+form.gate button { font: inherit; background: var(--c); color: #000; border: 0; padding: 0 1ch; cursor: pointer; }
+form.gate button:hover, form.gate button:focus-visible { background: var(--y); outline: none; }
+form.gate button:disabled { background: #333; color: #000; cursor: default; }
+form.gate .msg { margin: .65em 0 0; min-height: 1.3em; }
+
+/* The corrected delivery, revealed by mork.js */
+.rettet { background: var(--y); color: #000; padding: .65em 1ch; margin: 0 0 1.3em; }
+.rettet b { background: #000; color: var(--y); padding: 0 .5ch; }
+.rettet a { display: block; margin-top: .65em; background: #000; color: var(--c); padding: 0 1ch; text-decoration: none; }
+.rettet a:hover { color: var(--y); background: #000; }
+@media (prefers-reduced-motion: no-preference) {
+  .rettet b { animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { visibility: hidden; } }
+}

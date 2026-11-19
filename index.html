@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Bussene går tom for strøm. Ledelsen sier det er kulda.">
+<meta name="theme-color" content="#000000">
+<title>Mørketid</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="screen">
+  <div class="row"><span>P911  <span class="y">MØRKETID</span></span><span><span id="dato" class="c">--.--</span> <span id="klokke" class="y">--:--:--</span></span></div>
+  <div class="band"><h1>MØRKETID</h1><span id="subno">1/4</span></div>
+
+  <section class="sub on" data-key="Saken" aria-label="Saken">
+    <p>Det er november.<br>Elbussene fra Haugåsen går tomme for strøm.<br>Ledelsen er sikker på at det er kulda.</p>
+    <p class="y">Hva er det egentlig som skjer?</p>
+
+    <p class="c sol-t">SOLA OVER OSLO I DAG</p>
+    <div class="sky" id="sky" aria-hidden="true"></div>
+    <p class="row axis" aria-hidden="true"><span>00</span><span>06</span><span>12</span><span>18</span><span>24</span></p>
+    <p class="row"><span class="y" id="opp">OPP --:--</span><span class="y" id="ned">NED --:--</span><span class="c" id="lys"></span></p>
+    <p class="legend"><span><i class="sw y"></i>LYS</span><span><i class="sw r"></i>SKUMRING</span><span><i class="sw b"></i>BLÅTIME</span></p>
+
+    <ol class="tr" aria-label="Etapper">
+      <li class="open"><span>01 LETT</span><span>ÅPEN</span></li>
+      <li class="gate">---- port 1 ----</li>
+      <li><span>02 <span class="x" style="width:7ch" aria-label="skjult"></span></span><span class="r">LÅST</span></li>
+      <li class="gate">---- port 2 ----</li>
+      <li><span>03 <span class="x" style="width:8ch" aria-label="skjult"></span></span><span class="r">LÅST</span></li>
+    </ol>
+    <p>Saken har tre etapper. Mellom etappene står en port med ett spørsmål. Svarer du riktig, åpner neste etappe
+      seg.</p>
+
+    <h2>ETAPPE 1: HVORFOR STÅR BUSSENE?</h2>
+    <p>Finn ut hvorfor flere avganger har blitt innstilt i høst. Lever én graf og tre setninger som forklarer hvorfor.
+      <span class="y"><span data-count="lett">4</span> ting å finne.</span></p>
+    <a class="file" href="zips/morketid-lett.zip" download>▼ LAST NED morketid-lett.zip</a>
+    <span class="fmeta" data-filemeta>etappe 1 · 2 kB · sha256 73c87389ba46</span>
+    <p class="c">Neste: trykk den grønne knappen nederst.</p>
+  </section>
+
+  <section class="sub" data-key="Start" aria-label="Kom i gang">
+    <h2>KOM I GANG</h2>
+    <ol class="s">
+      <li><span class="no">1</span>Pakk ut zip-fila i en ny mappe (høyreklikk → Pakk ut alle).</li>
+      <li><span class="no">2</span>Åpne mappa i Claude Code: velg mappa i Claude-appen, eller åpne en terminal i mappa og
+        skriv <kbd>claude</kbd>.</li>
+      <li><span class="no">3</span>Følg stegene. Du kan kopiere forslagene eller skrive med egne ord.</li>
+    </ol>
+    <h2>STEG FOR STEG</h2>
+    <ol class="s">
+      <li><span class="no">01</span>Bli kjent med dataene først.
+        <span class="prompt">Les filene i mappa og fortell meg hva de inneholder. Ikke analyser ennå.</span></li>
+      <li><span class="no">02</span>Lag en første graf.
+        <span class="prompt">Lag en graf over innstilte avganger per dag, med én linje per depot.</span></li>
+      <li><span class="no">03</span>Be om en forklaring, og om hvor sikker Claude er.
+        <span class="prompt">Hva tror du er årsaken? Hvor sikker er du, og hva bygger du det på?</span></li>
+    </ol>
+  </section>
+
+  <section class="sub" data-key="Sjekk" aria-label="Steg 4 til 7">
+    <h2>STEG FOR STEG, FORTS.</h2>
+    <ol class="s">
+      <li><span class="no">04</span><span class="g">BE CLAUDE SJEKKE SITT EGET ARBEID.</span> Dette er det viktigste steget.
+        <span class="prompt">Gå gjennom analysen din på nytt. Leste du alle radene riktig? Har du fjernet eller endret noe? Vis meg hvordan du sjekket det.</span></li>
+      <li><span class="no">05</span><span class="g">SE DEG RUNDT.</span> Ikke alt du trenger, ligger i mappa. Claude vet bare
+        det du gir den, og den kan ikke se bordet ditt.</li>
+      <li><span class="no">06</span>Hvis Claude vil fjerne noe fordi det «ser feil ut», spør:
+        <span class="prompt">Hvordan vet du at dette er en feil og ikke noe som faktisk skjedde?</span></li>
+      <li><span class="no">07</span><span class="g">SJEKK SELV.</span> Åpne fila og finn minst én rad som viser det Claude
+        påstår. Hjelperne tar stikkprøver, og da må du vise det uten Claude.</li>
+    </ol>
+  </section>
+
+  <section class="sub" data-key="Port" aria-label="Port 1 og regler">
+    <h2>PORT 1</h2>
+    <form class="gate" data-gate="middels" data-norm="dato" autocomplete="off">
+      <p class="q">Når skjedde det som forklarer økningen på Haugåsen? Skriv datoen som DDMM.</p>
+      <p class="entry"><label for="svar1">GÅ TIL SIDE</label><input id="svar1" name="svar" inputmode="numeric"
+        maxlength="12" placeholder="DDMM" spellcheck="false"><button type="submit">OK</button></p>
+      <p class="msg" aria-live="polite"></p>
+    </form>
+    <h2>REGLER</h2>
+    <dl class="ru">
+      <dt>PORT</dt><dd>Ett svar åpner neste etappe. Tre feil på rad gir to minutters pause.</dd>
+      <dt>+1</dt><dd>per funn du kan vise beviset for selv, uten Claude. Hjelperne tar stikkprøver.</dd>
+      <dt>+2</dt><dd>per port du kommer gjennom.</dd>
+      <dt>-1</dt><dd>for ekte data som blir «ryddet bort». Ikke alt rart er feil.</dd>
+      <dt>SLUTT</dt><dd>Skriv <kbd>/cost</kbd>. Før tallet på <a href="bingokort.html">bingokortet</a>.</dd>
+    </dl>
+    <p class="c">All data er oppdiktet. Ingen ekte personer, kort eller holdeplasser.</p>
+  </section>
+
+  <nav class="keys" aria-label="Undersider"></nav>
+  <p class="foot"><span class="ghost">sist sett 03:14</span></p>
+</div>
+<script src="mork.js"></script>
+</body>
+</html>

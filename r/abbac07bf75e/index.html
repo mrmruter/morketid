@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<title>Mørketid · P922</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<div class="screen">
+  <div class="row"><span>P922  <a class="y" href="../../index.html">MØRKETID</a></span><span><span id="dato" class="c">--.--</span> <span id="klokke" class="y">--:--:--</span></span></div>
+  <div class="band"><h1>PORT 1 ÅPNET <span id="apnet" data-stage="2"></span></h1><span id="subno">1/4</span></div>
+
+  <section class="sub on" data-key="Saken" aria-label="Saken">
+    <p>Du vet hvor og når det startet.</p>
+    <p class="y">Nå: hvorfor.</p>
+
+    <p class="c sol-t">SOLA OVER OSLO I DAG</p>
+    <div class="sky" id="sky" aria-hidden="true"></div>
+    <p class="row axis" aria-hidden="true"><span>00</span><span>06</span><span>12</span><span>18</span><span>24</span></p>
+    <p class="row"><span class="y" id="opp">OPP --:--</span><span class="y" id="ned">NED --:--</span><span class="c" id="lys"></span></p>
+    <p class="legend"><span><i class="sw y"></i>LYS</span><span><i class="sw r"></i>SKUMRING</span><span><i class="sw b"></i>BLÅTIME</span></p>
+
+    <ol class="tr" aria-label="Etapper">
+      <li class="done"><span>01 LETT</span><span>BESTÅTT</span></li>
+      <li class="gate">---- port 1 ----</li>
+      <li class="open"><span>02 MIDDELS</span><span>ÅPEN</span></li>
+      <li class="gate">---- port 2 ----</li>
+      <li><span>03 <span class="x" style="width:8ch" aria-label="skjult"></span></span><span class="r">LÅST</span></li>
+    </ol>
+
+    <h2>ETAPPE 2: FØLG STRØMMEN</h2>
+    <p>Forklar hvorfor flere avganger har blitt innstilt i høst, og vis det i rådataene fra turdatasystemet,
+      vognregisteret og ladesystemet. <span class="y"><span data-count="middels">7</span> nye ting å finne.</span></p>
+    <p>Lever:</p>
+    <ul class="d">
+      <li>én graf som viser årsaken</li>
+      <li>en kort forklaring (maks en halv side)</li>
+      <li>en liste over datafeil du fant, og hvordan du verifiserte hver av dem</li>
+    </ul>
+    <a class="file" href="morketid-middels.zip" download>▼ LAST NED morketid-middels.zip</a>
+    <span class="fmeta" data-filemeta>etappe 2 · 604 kB · sha256 6d81039899c9</span>
+    <p class="c">Hent <span class="y">ark 2</span> hos hjelperne foran i rommet.</p>
+  </section>
+
+  <section class="sub" data-key="Start" aria-label="Kom i gang">
+    <h2>KOM I GANG</h2>
+    <ol class="s">
+      <li><span class="no">1</span>Pakk ut zip-fila i en <span class="y">ny</span> mappe.</li>
+      <li><span class="no">2</span>Start en ny Claude-økt i den nye mappa. Den gamle økta husker det du fant, den nye
+        gjør ikke det. Hva tar du med deg?</li>
+    </ol>
+    <h2>TIPSARK</h2>
+    <ul class="d">
+      <li><span class="g">SJEKK HVA CLAUDE ALLEREDE HAR FÅTT BESKJED OM.</span> En <code>CLAUDE.md</code> i mappa leses
+        automatisk, og Claude følger den. Les den selv før du starter.</li>
+      <li><span class="g">PLANLEGG FØRST.</span> Bytt til plan-modus (<kbd>Shift</kbd>+<kbd>Tab</kbd> i terminalen, eller
+        modusvelgeren i appen), og la Claude foreslå en plan før den gjør noe.</li>
+      <li><span class="g">TELL RADER.</span> Be om antall rader før og etter hver kobling og hver filtrering. Forsvinner
+        noe?</li>
+    </ul>
+  </section>
+
+  <section class="sub" data-key="Tips" aria-label="Flere tips">
+    <h2>TIPSARK, FORTS.</h2>
+    <ul class="d">
+      <li><span class="g">ARK 2</span> ligger ikke i mappa. Er det noe der Claude bør vite?</li>
+      <li><span class="g">SPØR ETTER MOTBEVIS:</span>
+        <span class="prompt">Hva ville motbevist konklusjonen din? Sjekk det.</span></li>
+      <li><span class="g">LÆR CLAUDE DET DU HAR FUNNET.</span> Be den rette opp <code>CLAUDE.md</code> med det som
+        faktisk stemmer: koder, enheter, tidssoner. Den får du bruk for senere.</li>
+      <li><span class="g">SPAR TOKENS.</span> Ikke be Claude lese store filer. Be den skrive kode som leser dem. Skriv
+        <kbd>/cost</kbd> for å se forbruket.</li>
+    </ul>
+  </section>
+
+  <section class="sub" data-key="Port" aria-label="Port 2">
+    <h2>PORT 2</h2>
+    <form class="gate" data-gate="mareritt" data-norm="kw-kode" autocomplete="off">
+      <p class="q">Hvor mange kW lader Haugåsen med etter endringen (hele tall)? Og hvilken årsakskode betyr lavt batteri
+        i oktober? Skriv kW og kode, for eksempel <span class="y">120 5</span>.</p>
+      <p class="entry"><label for="svar2">GÅ TIL SIDE</label><input id="svar2" name="svar" inputmode="numeric"
+        maxlength="16" placeholder="KW KODE" spellcheck="false"><button type="submit">OK</button></p>
+      <p class="msg" aria-live="polite"></p>
+    </form>
+    <p>Skriv klokkeslettet fra den blå linja øverst på bingokortet ditt.</p>
+    <p><a href="../../index.html#4">Regler</a> · <a href="../../bingokort.html">Bingokort</a></p>
+  </section>
+
+  <nav class="keys" aria-label="Undersider"></nav>
+  <p class="foot"><span class="ghost">03:14</span></p>
+</div>
+<script src="../../mork.js"></script>
+</body>
+</html>
