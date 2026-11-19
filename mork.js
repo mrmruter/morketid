@@ -112,6 +112,10 @@
       var n = parseInt(e.key, 10);
       if (n >= 1 && n <= subs.length) show(n, true);
     });
+    window.addEventListener('hashchange', function () {
+      var h = parseInt((location.hash || '').slice(1), 10);
+      if (h >= 1 && h <= subs.length) show(h, false);
+    });
     var start = parseInt((location.hash || '').slice(1), 10);
     show(start >= 1 && start <= subs.length ? start : 1, false);
   } else if ($('subno')) {
