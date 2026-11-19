@@ -44,6 +44,7 @@
   .score { margin: 1.3em 0; }
   .score .lead { margin: .5em 0; }
   .score .sum { color: var(--y); }
+  .lead.cost { margin: .65em 0 0; } .lead.cost > span:first-child { color: var(--c); }
   .rules { color: var(--c); }
 
   @page { size: A4; margin: 12mm; }
@@ -98,7 +99,7 @@
     <div class="lead"><span>EKTE DATA RYDDET BORT    -1</span><span class="dots"></span><span class="v">____</span></div>
     <div class="lead"><span>PERSONOPPLYSNINGER I SVAR -2</span><span class="dots"></span><span class="v">____</span></div>
     <div class="lead sum"><span>SUM</span><span class="dots"></span><span class="v">____</span></div>
-    <div class="lead"><span>KOSTNAD FRA /usage</span><span class="dots"></span><span class="v">____</span></div>
+    <div class="lead"><span>KOSTNAD, ALLE ØKTER</span><span class="dots"></span><span class="v">$____</span></div>
   </section>
 
   <p class="rules">Hjelperne tar stikkprøver: de peker på ett funn, og du har 60 sekunder på å vise beviset uten Claude.
@@ -124,6 +125,7 @@
       sec.innerHTML = '<div class="bar ' + s[0] + '"><span>' + s[1] + '</span><span>' + n + ' TING</span></div>' +
         '<div class="cols"><span></span><span>HVA FANT DU?</span><span>BEVIS: FIL, RAD, ARK</span><span>SJEKKET</span></div>' +
         rows +
+        '<div class="lead cost"><span>KOSTNAD DENNE ØKTA (/usage → Cost)</span><span class="dots"></span><span class="v">$____</span></div>' +
         (s[2] ? '<div class="gate"><div class="lead"><span>' + s[2] + ' ÅPNET KL.</span><span class="dots"></span>' +
           '<span class="v">[ ] HJELP</span></div><span class="small">Klokkeslettet står i den blå linja på neste etappe.</span></div>' : '');
       host.appendChild(sec);
