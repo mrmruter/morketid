@@ -1,132 +1,132 @@
-/* Mørketid as a teletext page: 40 columns, eight colours, mosaic graphics, coloured keys for sub-pages. */
-:root { --k: #000; --w: #fff; --y: #ff0; --c: #0ff; --g: #0f0; --r: #f22; --m: #f0f; --b: #00f;
-        --mono: Consolas, "Lucida Console", "Cascadia Mono", ui-monospace, Menlo, monospace; }
+/* Mørketid: a near-empty dark page. One column, ordinary type, one info screen, one filled button. */
+:root {
+  --bg: #1f2023; --tx: #dcd9d2; --mu: #9b988f; --line: #35373b; --soft: #2a2b2f; --amb: #ffb627; --red: #e8414f;
+  --ok: #8fc98a; --board: #0e0e0f;
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", sans-serif;
+  --mono: Consolas, "Cascadia Mono", ui-monospace, Menlo, monospace;
+}
 * { box-sizing: border-box; }
-html, body { margin: 0; background: #000; }
 html { -webkit-text-size-adjust: 100%; }
-body { color: var(--w); font: 400 min(20px, calc((100vw - 24px) / 23.2))/1.3 var(--mono); font-variant-ligatures: none; }
-.screen { width: 40.6ch; max-width: 100%; margin: 0 auto; padding: 2.2em 0 3em; }
-p, ol, ul, dl { margin: 0 0 1.3em; }
+html, body { margin: 0; background: var(--bg); color: var(--tx); }
+body { font: 17px/1.7 var(--sans); }
+.wrap { max-width: 36rem; margin: 0 auto; padding: 22px 20px 80px; }
+p, ol, ul, dl { margin: 0 0 1.1em; }
 h1, h2, h3 { font: inherit; margin: 0; }
-h2 { color: var(--y); margin-bottom: .65em; }
-a { color: inherit; }
-a:hover { background: var(--w); color: #000; text-decoration: none; }
-:focus-visible { outline: 2px solid var(--w); outline-offset: 2px; }
-::selection { background: var(--y); color: #000; }
+a { color: inherit; text-decoration-color: var(--mu); text-underline-offset: 4px; }
+a:hover { text-decoration-color: var(--amb); }
+:focus-visible { outline: 2px solid var(--amb); outline-offset: 3px; }
+::selection { background: var(--amb); color: #111; }
+.mu { color: var(--mu); }
+.am { color: var(--amb); }
 
-.y { color: var(--y); } .c { color: var(--c); } .g { color: var(--g); } .r { color: var(--r); } .m { color: var(--m); }
-.row { display: flex; justify-content: space-between; gap: 1ch; white-space: pre; }
-.row a { text-decoration: none; }
+/* Top line: name left, bingo card and clock right */
+.top { display: flex; justify-content: space-between; align-items: baseline; gap: 1em; font-size: 14px; color: var(--mu);
+       margin: 0 0 9vh; }
+.top .name { letter-spacing: .2em; }
+.top .name b { color: var(--red); margin-right: .5em; letter-spacing: 0; }
+.top nav { display: flex; gap: 1.2em; }
 
-/* Header band with double-height title */
-.band { background: var(--b); color: var(--y); height: 2.6em; margin: .4em 0 1.3em; padding: 0 1ch; overflow: hidden; }
-.band h1 { display: inline-block; transform: scaleY(2); transform-origin: 0 0; white-space: nowrap; }
-/* Ruter's red # at the top left of the page header row */
-.top > span:first-child::before { content: "#"; color: var(--r); margin-right: 1ch; }
-.band > span { float: right; color: var(--w); line-height: 2.6em; }
+.top a.name { text-decoration: none; }
+.top a.name:hover { color: var(--tx); }
 
-/* Today as a strip: an SVG at mosaic resolution (2 x 3 pixels per character, 2 character rows) */
-.sol-t { background: var(--b); color: var(--w); text-align: center; margin: 0 0 .65em; }   /* like a "Sol opp og ned" band */
-.sky { height: 2.6em; margin: 0; }
-.sky svg { display: block; width: 100%; height: 100%; }
-.sky .day { fill: var(--y); }
-.sky .civ { fill: var(--r); }
-.sky .nau { fill: var(--b); }
-.sky .mk { fill: var(--w); }
-.axis { margin: .2em 0 .65em; }
-.legend span { margin-right: 2ch; }
-.sw { display: inline-block; width: 1ch; height: .8em; vertical-align: -.05em; margin-right: .6ch; }
-.sw.y { background: var(--y); } .sw.r { background: var(--r); } .sw.b { background: var(--b); }
+/* Stage pages: when this stage was opened, bullet lists, notes and the send check */
+.stamp { font: 13px var(--mono); color: var(--mu); margin: 0 0 3.5em; }
+.stamp span { color: var(--tx); }
+ul.b { padding-left: 1.2em; }
+ul.b li { margin: 0 0 .55em; }
+ul.b li::marker { color: var(--mu); }
+.note { border-left: 3px solid var(--amb); padding: .2em 0 .2em .9em; margin: 1.4em 0 0; }
+.check { border: 1px solid var(--line); border-left: 3px solid var(--red); padding: .8em 1em; margin: 1.2em 0; }
 
-/* Sub-pages: all visible without JS, one at a time with it */
-.paged .sub { display: none; }
-.paged .sub.on { display: block; }
-.sub + .sub { margin-top: 2.6em; }
-.paged .sub + .sub { margin-top: 0; }
+/* The info screen */
+.board { font: 700 14px/1.8 var(--mono); color: var(--amb); background: var(--board); padding: 10px 14px; letter-spacing: .04em;
+         margin: 0 0 9vh; }
+.board div { display: grid; grid-template-columns: 4ch minmax(0, 1fr) auto; gap: 1.2ch; }
+.board .x { color: var(--red); }
+.board .dim { color: #75633a; }
+.board .cap { display: block; font-weight: 400; color: #6f6550; font-size: 12px; letter-spacing: .12em; }
 
-/* Stage track */
-.tr { list-style: none; padding: 0; }
-.tr li { display: flex; justify-content: space-between; gap: 1ch; }
-.tr li:not(.gate)::after, .idx a::after { content: "........................................................................";
-  order: 1; flex: 1; min-width: 2ch; overflow: hidden; white-space: nowrap; color: var(--b); }
-.tr li:not(.gate) > span:last-child, .idx a > span:last-child { order: 2; }
-.tr .gate { color: var(--c); padding-left: 3ch; justify-content: flex-start; }
-.tr .done { color: var(--w); }
-.tr .open { color: var(--g); }
-.x { display: inline-block; height: 1em; vertical-align: -.15em; background: var(--r); }
+/* Story */
+.lead { font-size: 19px; line-height: 1.6; }
+.q { color: var(--amb); margin: 1.6em 0 0; }
 
-/* Download */
-.file { display: block; background: var(--c); color: #000; text-decoration: none; padding: 0 1ch; }
-.file:hover, .file:focus-visible { background: var(--y); color: #000; outline: none; }
-.fmeta { color: var(--c); display: block; margin: .2em 0 1.3em; }
+/* Sections */
+section { margin: 4.5em 0 0; }
+h2 { font-size: 13px; letter-spacing: .16em; text-transform: uppercase; color: var(--mu); margin: 0 0 .9em; }
+.small { font-size: 15px; color: var(--mu); }
 
-/* Steps and prompts */
-ol.s { list-style: none; padding: 0; }
-ol.s > li { margin-bottom: .9em; padding-left: 4ch; position: relative; }
-ol.s > li > .no { position: absolute; left: 0; color: var(--y); }
-ul.d { list-style: none; padding: 0; }
-ul.d > li { margin-bottom: .9em; padding-left: 2ch; position: relative; }
-ul.d > li::before { content: "\25A0"; position: absolute; left: 0; color: var(--y); }
-.prompt { display: block; color: var(--c); margin-top: .2em; }
-.copy { font: inherit; background: none; border: 0; padding: 0; color: var(--m); cursor: pointer; }
-.copy:hover { background: var(--m); color: #000; }
-code, kbd { font: inherit; color: var(--c); }
-.box { background: var(--b); color: var(--w); padding: .65em 1ch; margin: 0 0 1.3em; }
-.box b { color: var(--y); }
+/* Stage list (mork.js fills in stages this browser has opened) */
+.tr { list-style: none; padding: 0; margin: 0 0 .9em; }
+.tr li { display: flex; justify-content: space-between; align-items: baseline; gap: 1em; padding: .45em 0; border-bottom: 1px solid var(--line); }
+.tr li > span:last-child { font-size: 14px; color: var(--mu); }
+.tr li.open > span:last-child { color: var(--amb); }
+.tr li.done > span:last-child { color: var(--ok); }
+.tr .x { display: inline-block; height: .8em; background: var(--soft); vertical-align: -.05em; border-radius: 2px; }
+
+/* Primary action */
+.dl { display: inline-flex; align-items: center; gap: .6em; min-height: 46px; padding: 0 20px; background: var(--amb); color: #141414;
+      font-weight: 600; text-decoration: none; border-radius: 3px; }
+.dl:hover { background: #ffcb5c; }
+.fmeta { display: block; font: 13px var(--mono); color: var(--mu); margin: .7em 0 0; overflow-wrap: anywhere; }
+
+/* Numbered steps */
+ol.s { list-style: none; padding: 0; counter-reset: s; }
+ol.s > li { counter-increment: s; position: relative; padding-left: 2.2em; margin: 0 0 .9em; }
+ol.s > li::before { content: counter(s); position: absolute; left: 0; top: .1em; width: 1.5em; height: 1.5em; border-radius: 50%;
+                    border: 1px solid var(--line); color: var(--mu); font-size: 13px; text-align: center; line-height: 1.45em; }
+ol.s strong { color: var(--tx); font-weight: 600; }
+kbd { font: 14px var(--mono); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 3px; padding: 0 .35em; }
+code { font: 15px var(--mono); }
+
+/* Fold-outs */
+details { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 1.4em 0 0; }
+details + details { border-top: 0; margin-top: 0; }
+summary { cursor: pointer; padding: .8em 0; list-style: none; display: flex; justify-content: space-between; gap: 1em; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; color: var(--mu); }
+details[open] summary::after { content: "–"; }
+details > :not(summary) { margin-top: .2em; }
+details > :last-child { margin-bottom: 1.2em; }
+
+/* Suggested prompts with a copy button */
+.prompt { display: block; font: 15px/1.6 var(--mono); color: var(--tx); background: var(--soft); padding: .6em .8em; margin: .4em 0 0;
+          border-radius: 3px; }
+.copy { font: 13px var(--sans); color: var(--amb); background: none; border: 0; padding: 0 0 0 .4em; cursor: pointer; }
+.copy:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* Gate */
+form.gate { margin: 0; }
+form.gate .q2 { margin: 0 0 .8em; }
+form.gate .entry { display: flex; gap: .6em; flex-wrap: wrap; }
+form.gate input { font: 17px var(--mono); width: 11em; max-width: 100%; min-height: 46px; padding: 0 .7em; background: var(--board); color: var(--tx);
+                  border: 1px solid var(--line); border-radius: 3px; caret-color: var(--amb); }
+form.gate input:focus { outline: none; border-color: var(--amb); }
+form.gate input::placeholder { color: #5b5a56; }
+form.gate button { font: 600 16px var(--sans); min-height: 46px; padding: 0 18px; background: none; color: var(--tx);
+                   border: 1px solid var(--mu); border-radius: 3px; cursor: pointer; }
+form.gate button:hover { border-color: var(--amb); color: var(--amb); }
+form.gate button:disabled { opacity: .4; cursor: default; }
+form.gate .msg { min-height: 1.7em; margin: .6em 0 0; font-size: 15px; }
+.msg.r { color: var(--red); } .msg.c { color: var(--mu); } .msg.g { color: var(--ok); }
 
 /* Rules */
-dl.ru { display: grid; grid-template-columns: 7ch minmax(0, 1fr); gap: .5em 1ch; }
-dl.ru dt { color: var(--y); }
+dl.ru { display: grid; grid-template-columns: 6.5em minmax(0, 1fr); gap: .5em 1em; margin: 0 0 1.2em; }
+dl.ru dt { color: var(--amb); font-size: 15px; }
 dl.ru dd { margin: 0; }
 
-/* Coloured keys */
-.keys { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 1.3em; }
-.keys:empty { display: none; }
-.keys button { font: inherit; border: 0; padding: 0; cursor: pointer; background: none; text-align: left; }
-.keys button:nth-child(1) { color: var(--r); } .keys button:nth-child(2) { color: var(--g); }
-.keys button:nth-child(3) { color: var(--y); } .keys button:nth-child(4) { color: var(--c); }
-.keys button[aria-current="page"] span { text-decoration: underline; text-underline-offset: 3px; }
-.keys button:hover, .keys button:focus-visible { background: currentColor; outline: none; }
-.keys button:hover span, .keys button:focus-visible span { color: #000; }
+/* The corrected delivery (stage 3), revealed by mork.js */
+.rettet { border: 1px solid var(--amb); border-left-width: 4px; padding: .9em 1em; margin: 0 0 2em; }
+.rettet b { color: var(--amb); }
+.rettet a { display: inline-block; margin-top: .6em; }
 
-.foot { margin-top: 1.3em; }
-.ghost { color: #000; }
+/* Footer */
+.foot { margin-top: 5em; padding-top: 1.2em; border-top: 1px solid var(--line); font-size: 14px; color: var(--mu); }
+.foot p { margin: 0 0 .4em; }
+.ghost { color: var(--bg); }
 
-/* Gate: "GÅ TIL SIDE" entry */
-form.gate { margin: 0 0 1.3em; }
-form.gate .q { margin-bottom: .65em; }
-form.gate .entry { display: flex; gap: 1ch; align-items: baseline; flex-wrap: wrap; }
-form.gate label { color: var(--c); }
-form.gate input { font: inherit; width: 12ch; background: #000; color: var(--y); border: 0; border-bottom: 2px solid var(--c);
-                  padding: 0 .5ch; border-radius: 0; caret-color: var(--y); }
-form.gate input:focus { outline: none; border-bottom-color: var(--y); }
-form.gate input::placeholder { color: #555; }
-form.gate button { font: inherit; background: var(--c); color: #000; border: 0; padding: 0 1ch; cursor: pointer; }
-form.gate button:hover, form.gate button:focus-visible { background: var(--y); outline: none; }
-form.gate button:disabled { background: #333; color: #000; cursor: default; }
-form.gate .msg { margin: .65em 0 0; min-height: 1.3em; }
-
-/* The corrected delivery, revealed by mork.js */
-.rettet { background: var(--y); color: #000; padding: .65em 1ch; margin: 0 0 1.3em; }
-.rettet b { background: #000; color: var(--y); padding: 0 .5ch; }
-.rettet a { display: block; margin-top: .65em; background: #000; color: var(--c); padding: 0 1ch; text-decoration: none; }
-.rettet a:hover { color: var(--y); background: #000; }
-@media (prefers-reduced-motion: no-preference) {
-  .rettet b { animation: blink 1s steps(1) infinite; }
-  @keyframes blink { 50% { visibility: hidden; } }
+@media (max-width: 520px) {
+  body { font-size: 16px; }
+  .lead { font-size: 18px; }
+  .top { margin-bottom: 6vh; }
+  .board { margin-bottom: 6vh; font-size: 13px; }
 }
-
-/* Headlines in double height, as on a news page (one line, max 40 characters) */
-.sub h2 { color: var(--w); white-space: nowrap; transform: scaleY(2); transform-origin: 0 0; margin: 0 0 2.1em; }
-.sub h2 + * { margin-top: 0; }
-
-/* Sub-page index with dot leaders and page numbers */
-.idx { list-style: none; padding: 0; margin: 0 0 1.3em; }
-.idx a { display: flex; gap: 1ch; text-decoration: none; color: var(--w); }
-.idx a > span:last-child { color: var(--y); }
-.idx a:hover, .idx a:focus-visible { background: var(--b); outline: none; }
-
-/* Weight: chrome, labels and highlights in bold (teletext); running text and prompts in regular, for reading */
-.row, .band, h2, h3, .tr, .keys, .file, .sol-t, .axis, .legend, .idx, .copy, label, button, dt, .no, b, strong,
-.y, .g, .r, .m, .lead, .bar, .check h2, .fmeta, .rettet b { font-weight: 700; }
-.prompt { font-weight: 400; }

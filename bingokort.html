@@ -3,112 +3,111 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#1f2023">
 <title>Mørketid · Bingokort</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23000'/%3E%3Ctext x='8' y='13' font-family='monospace' font-weight='700' font-size='15' text-anchor='middle' fill='%23ff2222'%3E%23%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%231f2023'/%3E%3Ctext x='8' y='13' font-family='monospace' font-weight='700' font-size='15' text-anchor='middle' fill='%23e8414f'%3E%23%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="style.css">
 <style>
-  /* The bingo card as an on-screen teletext page. Everything is saved in this browser only. */
-  .card { width: 40.6ch; max-width: 100%; margin: 0 auto; padding: 2.2em 0 3em; }
-  .intro { color: var(--c); }
+  /* The bingo card. Everything is saved in this browser only. */
+  .intro { color: var(--mu); }
+  .card input[type=text], .card input[type=number] { font: 16px var(--sans); background: var(--board); color: var(--tx);
+    border: 1px solid var(--line); border-radius: 3px; padding: .45em .6em; min-width: 0; width: 100%; caret-color: var(--amb); }
+  .card input:focus { outline: none; border-color: var(--amb); }
+  .card input::placeholder { color: #5b5a56; }
+  .name label { display: block; font-size: 14px; color: var(--mu); margin: 0 0 .3em; }
 
-  .lead { display: flex; gap: 1ch; align-items: baseline; white-space: nowrap; }
-  .lead .dots { flex: 1; overflow: hidden; color: var(--b); }
-  .lead .dots::after { content: "........................................................................................................................"; }
-  .lead .v { color: var(--y); }
+  .stage { margin: 3em 0 0; }
+  .shead { display: flex; justify-content: space-between; gap: 1em; align-items: baseline; border-bottom: 1px solid var(--line);
+           padding-bottom: .4em; margin: 0 0 1em; }
+  .shead b { font-weight: 600; } .shead span { font-size: 14px; color: var(--mu); }
+  .stage.locked .shead b { color: var(--mu); }
 
-  .bar { display: flex; justify-content: space-between; gap: 1ch; padding: 0 1ch; margin: 1.3em 0 .65em; color: #000; font-weight: 700; }
-  .bar.lett { background: var(--g); } .bar.middels { background: var(--y); } .bar.mareritt { background: var(--r); }
-  .bar.locked { background: #333; color: var(--w); }
-  .bar.blue { background: var(--b); color: var(--w); justify-content: center; }
+  .find { display: grid; grid-template-columns: 2em minmax(0, 1fr) auto; gap: .35em .8em; margin: 0 0 1em; align-items: start; }
+  .find .no { color: var(--mu); font: 14px var(--mono); padding-top: .6em; }
+  .find .what, .find .proof { grid-column: 2; }
+  .find .proof { font-size: 15px; }
+  .find .ctl { grid-column: 3; grid-row: 1 / span 2; display: flex; flex-direction: column; align-items: center; gap: .5em; padding-top: .25em; }
+  .find.struck .what, .find.struck .proof { text-decoration: line-through; color: var(--red); }
 
-  /* Inputs in teletext style */
-  .card input[type=text], .card input[type=number] { font: inherit; background: #000; color: var(--y); border: 0;
-    border-bottom: 2px solid var(--b); border-radius: 0; padding: 0 .3ch; min-width: 0; caret-color: var(--y); }
-  .card input:focus { outline: none; border-bottom-color: var(--y); }
-  .card input::placeholder { color: #555; }
-  .tick, .act { font: inherit; font-weight: 700; background: none; border: 0; padding: 0; cursor: pointer; color: var(--w); white-space: pre; }
-  .tick:focus-visible, .act:focus-visible { outline: 2px solid var(--w); }
-  .tick[aria-pressed="true"] { color: var(--g); }
-  .act { color: var(--m); }
-  .act:hover { background: var(--m); color: #000; }
+  .tick { width: 30px; height: 30px; border: 1px solid var(--mu); border-radius: 4px; background: none; color: var(--ok);
+          font: 700 18px/1 var(--sans); cursor: pointer; padding: 0; flex: none; }
+  .tick[aria-pressed="true"] { border-color: var(--ok); }
+  .act { font: 13px var(--sans); background: none; border: 0; padding: 0; color: var(--mu); cursor: pointer; text-decoration: underline;
+         text-underline-offset: 3px; }
+  .act:hover { color: var(--amb); }
+  .stryk[aria-pressed="true"] { color: var(--red); }
 
-  .name { display: flex; gap: 1ch; align-items: baseline; margin: 0 0 .65em; }
-  .name input { flex: 1; }
+  .cost { display: grid; grid-template-columns: minmax(0, 1fr) 7.5em; gap: .8em; align-items: center; margin: 1.2em 0 0; }
+  .cost label { font-size: 15px; color: var(--mu); }
+  .cost input { text-align: right; }
+  .gaterow { display: flex; justify-content: space-between; gap: 1em; align-items: center; flex-wrap: wrap; font-size: 15px;
+             color: var(--mu); border-top: 1px dashed var(--line); margin: 1em 0 0; padding-top: .8em; }
+  .gaterow .v { color: var(--tx); font-family: var(--mono); }
+  .gaterow label { display: flex; gap: .6em; align-items: center; }
 
-  /* One finding */
-  .find { display: grid; grid-template-columns: 3ch minmax(0, 1fr) auto; gap: .2em 1ch; margin: 0 0 .9em; align-items: baseline; }
-  .find .no { color: var(--y); font-weight: 700; }
-  .find input { width: 100%; }
-  .find .what { grid-column: 2; } .find .proof { grid-column: 2; color: var(--c); }
-  .find .ctl { grid-column: 3; grid-row: 1 / span 2; display: flex; flex-direction: column; align-items: flex-end; gap: .2em; }
-  .find.struck .what, .find.struck .proof { text-decoration: line-through; color: var(--r); }
-  .find.struck .no { color: var(--r); }
+  .box { border: 1px solid var(--line); padding: 1em; margin: 3em 0 0; }
+  .row2 { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: .8em; align-items: center; margin: 0 0 .6em; }
+  .helper { font-size: 14px; color: var(--mu); margin: 1em 0 .6em; }
+  .stepper { display: flex; gap: .8em; align-items: center; flex-wrap: wrap; }
+  .stepper .n { font-family: var(--mono); min-width: 2ch; text-align: center; }
+  .stepper .act { text-decoration: none; border: 1px solid var(--line); border-radius: 4px; width: 30px; height: 30px; font-size: 16px; }
 
-  .cost { display: flex; gap: 1ch; align-items: baseline; margin: .2em 0 0; }
-  .cost label { color: var(--c); font-weight: 700; flex: 1; }
-  .cost input { width: 8ch; text-align: right; }
-
-  .gate { border: 2px solid var(--c); padding: .3em 1ch; margin: .65em 0 0; }
-  .gate .lead .v { color: var(--w); }
-
-  .check { border: 2px solid var(--m); padding: .65em 1ch; margin: 1.3em 0; }
-  .check h2 { color: var(--m); margin: 0 0 .4em; font-size: inherit; }
-  .check .row2 { display: grid; grid-template-columns: 4ch minmax(0, 1fr); gap: 0 .5ch; margin: .25em 0; }
-  .helper { color: var(--c); margin: .65em 0 .3em; }
-  .stepper { display: flex; gap: 1ch; align-items: baseline; flex-wrap: wrap; }
-  .stepper .n { color: var(--y); min-width: 2ch; text-align: right; }
-
-  .score .lead { margin: .4em 0; }
-  .score .sum, .score .sum .v { color: var(--y); }
-  .result { background: #111; border-left: 3px solid var(--y); padding: .5em 1ch; margin: .65em 0; color: var(--w);
-            white-space: normal; overflow-wrap: anywhere; font-weight: 700; }
-  .rules { color: var(--c); }
-  .muted { color: #888; }
+  .score { margin: 3em 0 0; }
+  .line { display: flex; justify-content: space-between; gap: 1em; padding: .35em 0; border-bottom: 1px solid var(--line); }
+  .line .v { font-family: var(--mono); }
+  .line.sum { font-weight: 600; } .line.sum .v { color: var(--amb); }
+  .result { font: 14px/1.6 var(--mono); background: var(--board); border-left: 3px solid var(--amb); padding: .7em .9em; margin: 1em 0;
+            overflow-wrap: anywhere; }
+  .copybtn { font: 600 15px var(--sans); min-height: 44px; padding: 0 16px; background: var(--amb); color: #141414; border: 0;
+             border-radius: 3px; cursor: pointer; }
+  .copybtn:hover { background: #ffcb5c; }
 </style>
 </head>
 <body>
-<div class="card">
-  <div class="row top"><span>P910  <a class="y" href="index.html">MØRKETID</a></span><span><span id="dato" class="c">--.--</span> <span id="klokke" class="y">--:--:--</span></span></div>
-  <div class="band"><h1>BINGOKORT</h1></div>
+<div class="wrap card">
+  <header class="top">
+    <a class="name" href="index.html"><b>#</b>MØRKETID</a>
+    <nav><span>Bingokort</span><span id="klokke">--:--</span></nav>
+  </header>
 
-  <p class="intro">Du scorer, ikke Claude. Et funn teller bare hvis du kan vise beviset selv, uten Claude. Kortet lagres
-    bare i denne nettleseren. Ha det åpent i en egen fane.</p>
-  <div class="name"><label for="navn" class="y">NAVN</label><input type="text" id="navn" data-k="navn" maxlength="40"
-    placeholder="valgfritt" autocomplete="off"></div>
+  <p class="intro">Du scorer, ikke Claude. Et funn teller bare hvis du kan vise beviset selv, uten Claude. Kortet lagres bare i
+    denne nettleseren. Ha det åpent i en egen fane.</p>
+  <p class="name"><label for="navn">Navn (valgfritt)</label><input type="text" id="navn" data-k="navn" maxlength="40" autocomplete="off"></p>
 
   <div id="stages" data-lett="4" data-middels="7" data-mareritt="12"></div>
 
-  <section class="check" aria-label="Sendesjekk">
-    <h2>SENDESJEKK · FØR DU SENDER SVARET</h2>
-    <div class="row2"><button class="tick" type="button" data-k="send-1" aria-pressed="false">[ ]</button><span>Ingen kortnumre eller annet som kan peke ut en person</span></div>
-    <div class="row2"><button class="tick" type="button" data-k="send-2" aria-pressed="false">[ ]</button><span>Hvert tall i svaret har jeg sjekket mot kilden selv</span></div>
-    <div class="row2"><button class="tick" type="button" data-k="send-3" aria-pressed="false">[ ]</button><span>Anbefalingen følger av det jeg faktisk har vist</span></div>
+  <section class="box" aria-labelledby="h-send">
+    <h2 id="h-send">Sendesjekk · før du sender svaret</h2>
+    <div class="row2"><button class="tick" type="button" data-k="send-1" aria-pressed="false" aria-label="Ingen personopplysninger"></button><span>Ingen kortnumre eller annet som kan peke ut en person</span></div>
+    <div class="row2"><button class="tick" type="button" data-k="send-2" aria-pressed="false" aria-label="Tallene er sjekket"></button><span>Hvert tall i svaret har jeg sjekket mot kilden selv</span></div>
+    <div class="row2"><button class="tick" type="button" data-k="send-3" aria-pressed="false" aria-label="Anbefalingen følger"></button><span>Anbefalingen følger av det jeg faktisk har vist</span></div>
     <p class="helper">Fylles ut av hjelperen:</p>
-    <div class="row2"><button class="tick" type="button" data-k="pers" aria-pressed="false">[ ]</button><span>Personopplysninger i svaret <span class="r">(−2)</span></span></div>
-    <div class="stepper"><span>Ekte data ryddet bort <span class="r">(−1 hver)</span></span>
-      <button class="act" type="button" data-step="-1" aria-label="En mindre">[−]</button><span class="n" id="ryddet-n">0</span>
-      <button class="act" type="button" data-step="1" aria-label="En til">[+]</button></div>
+    <div class="row2"><button class="tick" type="button" data-k="pers" aria-pressed="false" aria-label="Personopplysninger i svaret"></button><span>Personopplysninger i svaret (−2)</span></div>
+    <div class="stepper"><span>Ekte data ryddet bort (−1 hver)</span>
+      <button class="act" type="button" data-step="-1" aria-label="En mindre">−</button><span class="n" id="ryddet-n">0</span>
+      <button class="act" type="button" data-step="1" aria-label="En til">+</button></div>
   </section>
 
-  <section class="score" aria-label="Poeng">
-    <div class="bar blue"><span>POENG</span></div>
-    <div class="lead"><span>VERIFISERTE FUNN   +1</span><span class="dots"></span><span class="v" id="s-funn">0</span></div>
-    <div class="lead"><span>PORTER             +2</span><span class="dots"></span><span class="v" id="s-port">0</span></div>
-    <div class="lead"><span>RYDDET BORT        −1</span><span class="dots"></span><span class="v" id="s-rydd">0</span></div>
-    <div class="lead"><span>PERSONOPPLYSN.     −2</span><span class="dots"></span><span class="v" id="s-pers">0</span></div>
-    <div class="lead sum"><span>SUM</span><span class="dots"></span><span class="v" id="s-sum">0</span></div>
-    <div class="lead"><span>KOSTNAD, ALLE ØKTER</span><span class="dots"></span><span class="v" id="s-kost">$0</span></div>
+  <section class="score" aria-labelledby="h-poeng">
+    <h2 id="h-poeng">Poeng</h2>
+    <div class="line"><span>Verifiserte funn, +1</span><span class="v" id="s-funn">0</span></div>
+    <div class="line"><span>Porter, +2</span><span class="v" id="s-port">0</span></div>
+    <div class="line"><span>Ryddet bort, −1</span><span class="v" id="s-rydd">0</span></div>
+    <div class="line"><span>Personopplysninger, −2</span><span class="v" id="s-pers">0</span></div>
+    <div class="line sum"><span>Sum</span><span class="v" id="s-sum">0</span></div>
+    <div class="line"><span>Kostnad, alle økter</span><span class="v" id="s-kost">$0</span></div>
 
-    <div class="bar blue"><span>RESULTATLINJE</span></div>
-    <p class="rules">Når fasilitator sier stopp: kopier linja og lim den inn der fasilitator ber om det.</p>
+    <h2 style="margin-top:2.4em">Resultatlinje</h2>
+    <p class="small">Når fasilitator sier stopp: kopier linja og lim den inn der fasilitator ber om det.</p>
     <p class="result" id="resultat">…</p>
-    <p><button class="act" type="button" id="kopier">[KOPIER RESULTATLINJA]</button></p>
+    <p><button class="copybtn" type="button" id="kopier">Kopier resultatlinja</button></p>
   </section>
 
-  <p class="rules">Hjelperne tar stikkprøver: de peker på ett funn du har sjekket, og du har 60 sekunder på å vise beviset
-    uten Claude. Klarer du det ikke, trykker hjelperen STRYK. Ikke alt som ser rart ut, er feil.</p>
-  <p class="muted"><button class="act" type="button" id="nullstill">[NULLSTILL KORTET]</button> All data er oppdiktet.</p>
+  <footer class="foot">
+    <p>Hjelperne tar stikkprøver: de peker på ett funn du har sjekket, og du har 60 sekunder på å vise beviset uten Claude.
+      Klarer du det ikke, trykker hjelperen Stryk. Ikke alt som ser rart ut, er feil.</p>
+    <p><button class="act" type="button" id="nullstill">Nullstill kortet</button> · All data er oppdiktet.</p>
+  </footer>
 </div>
 
 <script src="mork.js"></script>
@@ -127,34 +126,33 @@
 
   // Build the three stages. A later stage stays closed until this browser has opened it.
   var host = document.getElementById('stages');
-  var stages = [['lett', 1, 'LETT'], ['middels', 2, null], ['mareritt', 3, null]];
+  var stages = [['lett', 1, 'Hvorfor står bussene?'], ['middels', 2, null], ['mareritt', 3, null]];
   stages.forEach(function (s) {
     var lvl = s[0], k = s[1], n = parseInt(host.getAttribute('data-' + lvl), 10) || 0;
     var side = k > 1 ? get('side-' + k) : { name: s[2] };
     var sec = document.createElement('section');
     sec.className = 'stage ' + lvl;
     if (!side) {
-      sec.innerHTML = '<div class="bar locked"><span>ETAPPE ' + k + ' · LÅST</span><span>' + n + ' TING</span></div>' +
-        '<p class="muted">Åpnes når du kommer gjennom port ' + (k - 1) + '.</p>';
+      sec.className += ' locked';
+      sec.innerHTML = '<div class="shead"><b>Etappe ' + k + ' · låst</b><span>' + n + ' ting</span></div>' +
+        '<p class="small">Åpnes når du kommer gjennom port ' + (k - 1) + '.</p>';
       host.appendChild(sec);
       return;
     }
-    var html = '<div class="bar ' + lvl + '"><span>ETAPPE ' + k + ' · ' + esc(side.name || '') + '</span><span>' + n + ' TING</span></div>';
+    var html = '<div class="shead"><b>Etappe ' + k + ' · ' + esc(side.name || '') + '</b><span>' + n + ' ting å finne</span></div>';
     for (var i = 1; i <= n; i++) {
       var id = lvl + '-' + i, nn = (i < 10 ? '0' : '') + i;
       html += '<div class="find" data-id="' + id + '"><span class="no">' + nn + '</span>' +
         '<input class="what" type="text" data-k="' + id + '-funn" placeholder="Hva fant du?" aria-label="Funn ' + nn + '" autocomplete="off">' +
         '<input class="proof" type="text" data-k="' + id + '-bevis" placeholder="Bevis: fil, rad, ark" aria-label="Bevis ' + nn + '" autocomplete="off">' +
-        '<span class="ctl"><button class="tick" type="button" data-k="' + id + '-ok" aria-pressed="false" title="Sjekket selv">[ ]</button>' +
-        '<button class="act stryk" type="button" data-k="' + id + '-stryk" aria-pressed="false" title="Hjelperen stryker funnet">STRYK</button></span></div>';
+        '<span class="ctl"><button class="tick" type="button" data-k="' + id + '-ok" aria-pressed="false" title="Sjekket selv" aria-label="Funn ' + nn + ' sjekket selv"></button>' +
+        '<button class="act stryk" type="button" data-k="' + id + '-stryk" aria-pressed="false" title="Hjelperen stryker funnet">Stryk</button></span></div>';
     }
-    html += '<div class="cost"><label for="kost-' + k + '">KOSTNAD DENNE ØKTA ($)</label><input type="number" min="0" step="0.01" inputmode="decimal" id="kost-' + k + '" data-k="kost-' + k + '" placeholder="0,00"></div>';
+    html += '<div class="cost"><label for="kost-' + k + '">Kostnad denne økta ($), fra /usage</label><input type="text" inputmode="decimal" autocomplete="off" id="kost-' + k + '" data-k="kost-' + k + '" placeholder="0,00"></div>';
     if (k < 3) {
       var next = get('apnet-' + (k + 1));
-      html += '<div class="gate"><div class="lead"><span>PORT ' + k + ' ÅPNET KL.</span><span class="dots"></span>' +
-        '<span class="v">' + (next ? hhmm(next) : '--:--') + '</span></div>' +
-        '<div class="lead"><span class="c">Fikk lenken av en hjelper</span><span class="dots"></span>' +
-        '<button class="tick" type="button" data-k="hjelp-' + k + '" aria-pressed="false">[ ]</button></div></div>';
+      html += '<div class="gaterow"><span>Port ' + k + ' åpnet kl. <span class="v">' + (next ? hhmm(next) : '--:--') + '</span></span>' +
+        '<label>Fikk lenken av en hjelper <button class="tick" type="button" data-k="hjelp-' + k + '" aria-pressed="false" aria-label="Fikk lenken av en hjelper"></button></label></div>';
     }
     sec.innerHTML = html;
     host.appendChild(sec);
@@ -181,10 +179,10 @@
   });
   function paint(el, on) {
     if (el.classList.contains('stryk')) {
-      el.textContent = on ? 'STRØKET' : 'STRYK';
+      el.textContent = on ? 'Strøket' : 'Stryk';
       el.closest('.find').classList.toggle('struck', on);
     } else {
-      el.textContent = on ? '[X]' : '[ ]';
+      el.textContent = on ? '✓' : '';
     }
   }
   var ryddet = document.getElementById('ryddet-n');
@@ -229,7 +227,7 @@
 
   document.getElementById('kopier').addEventListener('click', function () {
     var b = this, text = document.getElementById('resultat').textContent;
-    var done = function () { b.textContent = '[KOPIERT]'; setTimeout(function () { b.textContent = '[KOPIER RESULTATLINJA]'; }, 1500); };
+    var done = function () { b.textContent = 'Kopiert'; setTimeout(function () { b.textContent = 'Kopier resultatlinja'; }, 1500); };
     if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, function () {});
     else { var r = document.createRange(); r.selectNodeContents(document.getElementById('resultat'));
            var s = getSelection(); s.removeAllRanges(); s.addRange(r); }

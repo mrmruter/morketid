@@ -4,94 +4,89 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#000000">
-<title>Mørketid · P922</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23000'/%3E%3Ctext x='8' y='13' font-family='monospace' font-weight='700' font-size='15' text-anchor='middle' fill='%23ff2222'%3E%23%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#1f2023">
+<title>Mørketid · Etappe 2</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%231f2023'/%3E%3Ctext x='8' y='13' font-family='monospace' font-weight='700' font-size='15' text-anchor='middle' fill='%23e8414f'%3E%23%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="../../style.css">
 </head>
 <body>
-<div class="screen">
-  <div class="row top"><span>P922  <a class="y" href="../../index.html">MØRKETID</a></span><span><span id="dato" class="c">--.--</span> <span id="klokke" class="y">--:--:--</span></span></div>
-  <div class="band"><h1>PORT 1 ÅPNET <span id="apnet" data-stage="2" data-name="MIDDELS"></span></h1><span id="subno">1/3</span></div>
+<div class="wrap">
+  <header class="top">
+    <a class="name" href="../../index.html"><b>#</b>MØRKETID</a>
+    <nav><a href="../../bingokort.html" target="_blank">Bingokort ↗</a><span id="klokke">--:--</span></nav>
+  </header>
 
-  <section class="sub on" data-key="Saken" aria-label="Saken">
-    <p>Du vet hvor og når det startet.</p>
-    <p class="y">Nå: hvorfor.</p>
+  <p class="stamp">Port 1 åpnet kl. <span id="apnet" data-stage="2" data-name="Følg strømmen">--:--</span></p>
+  <p class="lead">Du vet hvor og når det startet.</p>
+  <p class="lead q">Nå: hvorfor.</p>
 
-    <h2>ETAPPE 2: FØLG STRØMMEN</h2>
-    <p>Forklar hvorfor flere avganger har blitt innstilt i høst, og vis det i rådataene fra turdatasystemet,
-      vognregisteret og ladesystemet. <span class="y"><span data-count="middels">7</span> nye ting å finne.</span></p>
+  <section aria-labelledby="h-saken">
+    <h2 id="h-saken">Saken</h2>
+    <ol class="tr" aria-label="Etapper">
+      <li class="done"><span>1 · <a href="../../index.html">Hvorfor står bussene?</a></span><span>bestått</span></li>
+      <li class="open"><span>2 · Følg strømmen</span><span>åpen</span></li>
+      <li data-stage="3"><span>3 · <span class="x" style="width:9em" aria-label="skjult"></span></span><span>låst</span></li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="h-oppgave">
+    <h2 id="h-oppgave">Etappe 2</h2>
+    <p>Forklar hvorfor flere avganger har blitt innstilt i høst, og vis det i rådataene fra turdatasystemet, vognregisteret
+      og ladesystemet. Det er <span data-count="middels">7</span> nye ting å finne.</p>
     <p>Lever:</p>
-    <ul class="d">
+    <ul class="b">
       <li>én graf som viser årsaken</li>
-      <li>en kort forklaring (maks en halv side)</li>
+      <li>en kort forklaring, maks en halv side</li>
       <li>en liste over datafeil du fant, og hvordan du verifiserte hver av dem</li>
     </ul>
-    <a class="file" href="morketid-middels.zip" download>▼ LAST NED morketid-middels.zip</a>
+    <a class="dl" href="morketid-middels.zip" download>Last ned datapakken</a>
     <span class="fmeta" data-filemeta>etappe 2 · 689 kB · sha256 d01e41cc193c</span>
-    <p class="c">Hent <span class="y">ark 2</span> hos hjelperne foran i rommet.</p>
-    <ul class="idx" aria-label="Undersider">
-      <li><a href="#2"><span>Kom i gang og tipsark</span><span>922/2</span></a></li>
-      <li><a href="#3"><span>Port 2</span><span>922/3</span></a></li>
-      <li><a href="../../bingokort.html" target="_blank"><span>Bingokort (egen fane)</span><span>910</span></a></li>
-    </ul>
-
-    <ol class="tr" aria-label="Etapper">
-      <li class="done"><span>01 LETT</span><span>BESTÅTT</span></li>
-      <li class="gate">---- port 1 ----</li>
-      <li class="open"><span>02 MIDDELS</span><span>ÅPEN</span></li>
-      <li class="gate">---- port 2 ----</li>
-      <li data-stage="3"><span>03 <span class="x" style="width:8ch" aria-label="skjult"></span></span><span class="r">LÅST</span></li>
-    </ol>
-
-    <p class="c sol-t">SOLA OVER OSLO I DAG</p>
-    <div class="sky" id="sky" aria-hidden="true"></div>
-    <p class="row axis" aria-hidden="true"><span>00</span><span>06</span><span>12</span><span>18</span><span>24</span></p>
-    <p class="row"><span class="y" id="opp">OPP --:--</span><span class="y" id="ned">NED --:--</span><span class="c" id="lys"></span></p>
-    <p class="legend"><span><i class="sw y"></i>LYS</span><span><i class="sw r"></i>SKUMRING</span><span><i class="sw b"></i>BLÅTIME</span></p>
+    <p class="note">Hent <strong>ark 2</strong> hos hjelperne foran i rommet.</p>
   </section>
 
-  <section class="sub" data-key="Start" aria-label="Kom i gang og tipsark">
-    <h2>KOM I GANG</h2>
+  <section aria-labelledby="h-start">
+    <h2 id="h-start">Kom i gang</h2>
     <ol class="s">
-      <li><span class="no">0</span>I den gamle økta: skriv <kbd>/usage</kbd> og før Cost-tallet på bingokortet.</li>
-      <li><span class="no">1</span>Pakk ut zip-fila i en <span class="y">ny</span> mappe.</li>
-      <li><span class="no">2</span>Start en ny økt i Code (<kbd>Ctrl</kbd>+<kbd>N</kbd>) og velg den nye mappa med
-        <span class="y">Open folder…</span>. Den gamle økta husker det du fant, den nye gjør ikke det. Hva tar du med
-        deg?</li>
+      <li>I den gamle økta: skriv <kbd>/usage</kbd> og før Cost-tallet på bingokortet.</li>
+      <li>Pakk ut zip-fila i en <strong>ny</strong> mappe.</li>
+      <li>Start en ny økt i Code (<kbd>Ctrl</kbd>+<kbd>N</kbd>) og velg den nye mappa med <strong>Open folder…</strong>.
+        Den gamle økta husker det du fant, den nye gjør ikke det. Hva tar du med deg?</li>
     </ol>
-    <h2>TIPSARK</h2>
-    <ul class="d">
-      <li><span class="g">SJEKK HVA CLAUDE ALLEREDE HAR FÅTT BESKJED OM.</span> En <code>CLAUDE.md</code> i mappa leses
-        automatisk, og Claude følger den. Les den selv før du starter.</li>
-      <li><span class="g">PLANLEGG FØRST.</span> Velg <span class="y">Plan</span> i modusvelgeren under meldingsfeltet, og la
-        Claude foreslå en plan før den gjør noe.</li>
-      <li><span class="g">TELL RADER.</span> Be om antall rader før og etter hver kobling og hver filtrering. Forsvinner
-        noe?</li>
-      <li><span class="g">ARK 2</span> ligger ikke i mappa. Er det noe der Claude bør vite?</li>
-      <li><span class="g">SPØR ETTER MOTBEVIS:</span>
-        <span class="prompt">Hva ville motbevist konklusjonen din? Sjekk det.</span></li>
-      <li><span class="g">LÆR CLAUDE DET DU HAR FUNNET.</span> Be den rette opp <code>CLAUDE.md</code> med det som
-        faktisk stemmer: koder, enheter, tidssoner. Den får du bruk for senere.</li>
-      <li><span class="g">SPAR TOKENS.</span> Ikke be Claude lese store filer. Be den skrive kode som leser dem. Skriv
-        <kbd>/usage</kbd> for å se forbruket.</li>
-    </ul>
+
+    <details open>
+      <summary>Tipsark</summary>
+      <ul class="b">
+        <li><strong>Sjekk hva Claude allerede har fått beskjed om.</strong> En <code>CLAUDE.md</code> i mappa leses automatisk,
+          og Claude følger den. Les den selv før du starter.</li>
+        <li><strong>Planlegg først.</strong> Velg <strong>Plan</strong> i modusvelgeren under meldingsfeltet, og la Claude foreslå
+          en plan før den gjør noe.</li>
+        <li><strong>Tell rader.</strong> Be om antall rader før og etter hver kobling og hver filtrering. Forsvinner noe?</li>
+        <li><strong>Ark 2</strong> ligger ikke i mappa. Er det noe der Claude bør vite?</li>
+        <li><strong>Spør etter motbevis.</strong>
+          <span class="prompt">Hva ville motbevist konklusjonen din? Sjekk det.</span></li>
+        <li><strong>Lær Claude det du har funnet.</strong> Be den rette opp <code>CLAUDE.md</code> med det som faktisk stemmer:
+          koder, enheter, tidssoner. Den får du bruk for senere.</li>
+        <li><strong>Spar tokens.</strong> Ikke be Claude lese store filer. Be den skrive kode som leser dem. Skriv
+          <kbd>/usage</kbd> for å se forbruket.</li>
+      </ul>
+    </details>
   </section>
 
-  <section class="sub" data-key="Port" aria-label="Port 2">
-    <h2>PORT 2</h2>
+  <section aria-labelledby="h-port">
+    <h2 id="h-port">Port 2</h2>
     <form class="gate" data-gate="mareritt" data-norm="kw-dato" autocomplete="off">
-      <p class="q">Hvor mange kW lader Haugåsen med etter endringen (hele tall)? Og fra hvilken dato ble lavt batteri
-        registrert med en annen årsakskode enn før? Skriv kW og dato, for eksempel <span class="y">120 3112</span>.</p>
-      <p class="entry"><label for="svar2">GÅ TIL SIDE</label><input id="svar2" name="svar" inputmode="numeric"
-        maxlength="20" placeholder="KW DDMM" spellcheck="false"><button type="submit">OK</button></p>
+      <p class="q2"><label for="svar2">Hvor mange kW lader Haugåsen med etter endringen (hele tall)? Og fra hvilken dato ble
+        lavt batteri registrert med en annen årsakskode enn før? Skriv kW og dato, for eksempel <span class="am">120 3112</span>.</label></p>
+      <p class="entry"><input id="svar2" name="svar" inputmode="numeric" maxlength="20" placeholder="kW DDMM" spellcheck="false"><button type="submit">Åpne</button></p>
       <p class="msg" aria-live="polite"></p>
     </form>
-    <p><a href="../../index.html#3">Regler</a> · <a href="../../bingokort.html" target="_blank">Bingokort</a></p>
+    <p class="small"><a href="../../index.html#regler">Regler og poeng</a></p>
   </section>
 
-  <nav class="keys" aria-label="Undersider"></nav>
-  <p class="foot"><span class="ghost">03:14</span></p>
+  <footer class="foot">
+    <p id="sol">&nbsp;</p>
+    <p>All data er oppdiktet. <span class="ghost">03:14</span></p>
+  </footer>
 </div>
 <script src="../../mork.js"></script>
 </body>

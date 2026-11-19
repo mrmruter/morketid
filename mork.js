@@ -1,5 +1,6 @@
-/* Mørketid teletext: clock, today's sun path over Oslo in teletext pixels, sub-pages with coloured keys,
-   and copy buttons on prompts. Works without JS too: then every sub-page is shown in sequence. */
+/* Mørketid: Oslo clock, the next bus on the info screen, today's sun in one sentence, self-service gates,
+   remembered stages, the corrected delivery on stage 3, and copy buttons on prompts. The page works without JS;
+   only the gates need it. */
 (function () {
   'use strict';
   var LAT = 59.91, LON = 10.75, R = Math.PI / 180;
@@ -34,95 +35,35 @@
   }
   function $(id) { return document.getElementById(id); }
 
-  // Today as one strip at teletext mosaic resolution: 80 x 6 pixels (2 x 3 per character cell, 2 rows).
-  // Columns are 18 minutes. Rows 0-1 hold the "now" marker (a small downward triangle), row 2 is a gap,
-  // rows 3-5 are the strip: yellow while the sun is up, red in civil twilight, blue in nautical twilight.
-  var COLS = 80, H = 6, STEP = 18, NS = 'http://www.w3.org/2000/svg';
-  function rect(x, y, w, h, cls) {
-    var r = document.createElementNS(NS, 'rect');
-    r.setAttribute('x', x); r.setAttribute('y', y); r.setAttribute('width', w); r.setAttribute('height', h);
-    r.setAttribute('class', cls);
-    return r;
-  }
   function hm(min) { return pad(Math.floor(min / 60) % 24) + ':' + pad(min % 60); }
-  function sky() {
-    var host = $('sky');
+
+  // Today's sun over Oslo in one sentence.
+  function sun() {
+    var host = $('sol');
     if (!host) return;
-    var now = new Date(Math.floor(Date.now() / 1000) * 1000), o = oslo(now), start = now.getTime() - o.secs * 1000;
-    var rise = null, set = null, prev = alt(start);
+    var now = new Date(), o = oslo(now), start = now.getTime() - o.secs * 1000, rise = null, set = null, prev = alt(start);
     for (var m = 1; m < 1440; m++) {
       var a = alt(start + m * 60000);
       if (prev <= -0.833 && a > -0.833) rise = m;
       if (prev > -0.833 && a <= -0.833) set = m;
       prev = a;
     }
-    var svg = document.createElementNS(NS, 'svg');
-    svg.setAttribute('viewBox', '0 0 ' + COLS + ' ' + H);
-    svg.setAttribute('preserveAspectRatio', 'none');
-    svg.setAttribute('shape-rendering', 'crispEdges');
-    for (var c = 0; c < COLS; c++) {
-      var a2 = alt(start + (c * STEP + STEP / 2) * 60000);
-      var cls = a2 > -0.833 ? 'day' : a2 > -6 ? 'civ' : a2 > -12 ? 'nau' : null;
-      if (cls) svg.appendChild(rect(c, 3, 1, 3, cls));
-    }
-    var nc = Math.max(0, Math.min(COLS - 1, Math.floor(o.secs / 60 / STEP)));
-    svg.appendChild(rect(Math.max(0, nc - 1), 0, nc === 0 || nc === COLS - 1 ? 2 : 3, 1, 'mk'));
-    svg.appendChild(rect(nc, 1, 1, 1, 'mk'));
-    host.replaceChildren(svg);
-
-    if ($('opp')) $('opp').textContent = 'OPP ' + (rise != null ? hm(rise) : '--:--');
-    if ($('ned')) $('ned').textContent = 'NED ' + (set != null ? hm(set) : '--:--');
-    if ($('lys') && rise != null && set != null) {
-      $('lys').textContent = Math.floor((set - rise) / 60) + 'T ' + ((set - rise) % 60) + 'M LYS';
-    }
+    var nowM = Math.floor(o.secs / 60), s;
+    if (rise == null || set == null) s = 'Sola står ikke opp over Oslo i dag.';
+    else if (nowM < rise) s = 'Sola står opp over Oslo kl. ' + hm(rise) + ' og går ned kl. ' + hm(set) + '.';
+    else if (nowM < set) s = 'Sola går ned over Oslo kl. ' + hm(set) + '. Det er ' + Math.floor((set - nowM) / 60) + ' t ' + ((set - nowM) % 60) + ' min igjen.';
+    else s = 'Sola gikk ned over Oslo kl. ' + hm(set) + '. Det var lyst i ' + Math.floor((set - rise) / 60) + ' t ' + ((set - rise) % 60) + ' min i dag.';
+    host.textContent = s;
   }
 
   function tick() {
     var o = oslo(new Date());
-    if ($('klokke')) $('klokke').textContent = o.time;
-    if ($('dato')) $('dato').textContent = o.date;
+    if ($('klokke')) $('klokke').textContent = o.time.slice(0, 5);
+    if ($('neste')) $('neste').textContent = oslo(new Date(Date.now() + 12 * 60000)).time.slice(0, 5);
   }
-  sky(); tick();
-  setInterval(tick, 1000);
-  setInterval(sky, 60000);
-
-  // Sub-pages: each <section class="sub" data-key="..."> gets a coloured key (red, green, yellow, cyan).
-  var subs = Array.prototype.slice.call(document.querySelectorAll('.sub'));
-  var nav = document.querySelector('.keys');
-  if (subs.length > 1 && nav) {
-    document.documentElement.classList.add('paged');
-    var keys = subs.map(function (s, i) {
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.innerHTML = '<span></span>';
-      b.firstChild.textContent = s.getAttribute('data-key');
-      b.addEventListener('click', function () { show(i + 1, true); });
-      nav.appendChild(b);
-      return b;
-    });
-    var show = function (n, push) {
-      subs.forEach(function (s, i) { s.classList.toggle('on', i === n - 1); });
-      keys.forEach(function (k, i) { k.setAttribute('aria-current', i === n - 1 ? 'page' : 'false'); });
-      if ($('subno')) $('subno').textContent = n + '/' + subs.length;
-      if (push && history.replaceState) history.replaceState(null, '', '#' + n);
-      window.scrollTo(0, 0);
-    };
-    document.addEventListener('keydown', function (e) {
-      if (e.ctrlKey || e.metaKey || e.altKey) return;
-      var tag = (e.target && e.target.tagName) || '';
-      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (e.target && e.target.isContentEditable)) return;
-      var n = parseInt(e.key, 10);
-      if (n >= 1 && n <= subs.length) show(n, true);
-    });
-    window.addEventListener('hashchange', function () {
-      var h = parseInt((location.hash || '').slice(1), 10);
-      if (h >= 1 && h <= subs.length) show(h, false);
-    });
-    var start = parseInt((location.hash || '').slice(1), 10);
-    show(start >= 1 && start <= subs.length ? start : 1, false);
-  } else if ($('subno')) {
-    $('subno').textContent = '1/1';
-  }
+  sun(); tick();
+  setInterval(tick, 15000);
+  setInterval(sun, 60000);
 
   // ---- Gates: the answer is the key. The page hashes the answer and opens r/<hash>/ if it exists. ----
   var SALT = 'morketid-2026-12';                                   // filled in by tools/publish.py
@@ -161,7 +102,7 @@
       var s = locked();
       if (!s) { btn.disabled = false; return; }
       btn.disabled = true;
-      say('FOR MANGE FORSØK. VENT ' + Math.floor(s / 60) + ':' + pad(s % 60), 'r');
+      say('For mange forsøk. Vent ' + Math.floor(s / 60) + ':' + pad(s % 60) + '.', 'r');
       setTimeout(showLock, 1000);
     }
     showLock();
@@ -169,20 +110,20 @@
       e.preventDefault();
       if (locked()) return showLock();
       var k = norm(kind, input.value);
-      if (!k) return say('SKRIV SVARET SOM VIST', 'r');
-      if (!(window.crypto && crypto.subtle)) return say('SIDEN MÅ ÅPNES MED HTTPS', 'r');
-      say('SØKER ...', 'c');
+      if (!k) return say('Skriv svaret slik det står over.', 'r');
+      if (!(window.crypto && crypto.subtle)) return say('Siden må åpnes med https.', 'r');
+      say('Sjekker …', 'c');
       crypto.subtle.digest('SHA-256', new TextEncoder().encode(SALT + '|' + stage + '|' + k)).then(function (buf) {
         var url = ROOT + 'r/' + hex(buf).slice(0, 12) + '/';
         return fetch(url, { method: 'HEAD', cache: 'no-store' }).then(function (r) {
-          if (r.ok) { say('SIDEN FUNNET', 'g'); location.href = url; return; }
+          if (r.ok) { say('Riktig. Åpner neste etappe …', 'g'); location.href = url; return; }
           var l = store.get(LOCK) || { fails: 0 };
           l.fails = (l.fails || 0) + 1;
           if (l.fails >= 3) { l = { fails: 0, until: Date.now() + 120000 }; store.set(LOCK, l); return showLock(); }
           store.set(LOCK, l);
-          say('SIDEN FINNES IKKE', 'r');
+          say('Ingen etappe bak det svaret.', 'r');
         });
-      }).catch(function () { say('INGEN FORBINDELSE. PRØV IGJEN.', 'r'); });
+      }).catch(function () { say('Ingen forbindelse. Prøv igjen.', 'r'); });
     });
   });
 
@@ -202,14 +143,14 @@
   Array.prototype.forEach.call(document.querySelectorAll('.tr li[data-stage]'), function (li) {
     var k = parseInt(li.getAttribute('data-stage'), 10);
     var next = store.get('side-' + (k + 1));
-    var me = k === 1 ? (next ? { url: ROOT, name: 'LETT' } : null) : store.get('side-' + k);
+    var me = k === 1 ? (next ? { url: ROOT, name: 'Hvorfor står bussene?' } : null) : store.get('side-' + k);
     if (!me || !me.url) return;
-    var spans = li.querySelectorAll('span'), first = spans[0], last = li.lastElementChild;
-    first.textContent = '0' + k + ' ';
+    var first = li.firstElementChild, last = li.lastElementChild;
+    first.textContent = k + ' · ';
     var a = document.createElement('a');
-    a.href = me.url; a.textContent = me.name || 'ETAPPE ' + k;
+    a.href = me.url; a.textContent = me.name || 'Etappe ' + k;
     first.appendChild(a);
-    last.className = ''; last.textContent = next ? 'BESTÅTT' : 'ÅPEN';
+    last.textContent = next ? 'bestått' : 'åpen';
     li.className = next ? 'done' : 'open';
   });
 
@@ -226,16 +167,24 @@
     reveal();
   }
 
+  // A link to index.html#regler (or any fold-out) opens that fold-out.
+  function openFold() {
+    var el = location.hash && document.getElementById(location.hash.slice(1));
+    if (el && el.tagName === 'DETAILS') { el.open = true; el.scrollIntoView(); }
+  }
+  openFold();
+  window.addEventListener('hashchange', openFold);
+
   // Copy buttons on suggested prompts.
   Array.prototype.forEach.call(document.querySelectorAll('.prompt'), function (p) {
     var text = p.textContent.trim();
     var b = document.createElement('button');
-    b.type = 'button'; b.className = 'copy'; b.textContent = '[KOPIER]';
+    b.type = 'button'; b.className = 'copy'; b.textContent = 'Kopier';
     b.addEventListener('click', function () {
       if (!navigator.clipboard || !window.isSecureContext) return;
       navigator.clipboard.writeText(text).then(function () {
-        b.textContent = '[KOPIERT]';
-        setTimeout(function () { b.textContent = '[KOPIER]'; }, 1400);
+        b.textContent = 'Kopiert';
+        setTimeout(function () { b.textContent = 'Kopier'; }, 1400);
       }, function () {});
     });
     p.appendChild(document.createTextNode(' '));
@@ -243,7 +192,7 @@
   });
 
   if (window.console && console.log) {
-    console.log('%cP911 MØRKETID', 'font: 700 16px monospace; color: #ff0; background: #00f; padding: 2px 6px');
+    console.log('%c# MØRKETID', 'font: 700 15px monospace; color: #ffb627; background: #0e0e0f; padding: 3px 8px');
     console.log('Du leter. Bra. Men svaret står ikke i kildekoden til denne siden.');
   }
 })();
