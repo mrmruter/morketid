@@ -21,8 +21,8 @@ a:hover { background: var(--w); color: #000; text-decoration: none; }
 /* Header band with double-height title */
 .band { background: var(--b); color: var(--y); height: 2.6em; margin: .4em 0 1.3em; padding: 0 1ch; overflow: hidden; }
 .band h1 { display: inline-block; transform: scaleY(2); transform-origin: 0 0; white-space: nowrap; }
-/* Ruter's red # as a teletext block in front of every page title */
-.band h1::before { content: "#"; color: var(--r); background: #000; padding: 0 .5ch; margin-right: 1ch; }
+/* Ruter's red # at the top left of the page header row */
+.top > span:first-child::before { content: "#"; color: var(--r); margin-right: 1ch; }
 .band > span { float: right; color: var(--w); line-height: 2.6em; }
 
 /* Today as a strip: an SVG at mosaic resolution (2 x 3 pixels per character, 2 character rows) */

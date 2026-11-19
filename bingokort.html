@@ -55,6 +55,7 @@
     .band, .bar { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .band { background: #00f !important; }
     .band h1, .band > span, .bar.blue, .bar.blue * { color: #fff !important; }
+    .top > span:first-child::before { color: #f22 !important; }
     .lead .dots { color: #888 !important; }
     .find { grid-template-columns: 3ch minmax(0, 1.1fr) minmax(0, 1fr) 8ch; align-items: end; min-height: 8.5mm;
             margin: 0; border-bottom: 1px dotted #999; }
@@ -73,7 +74,7 @@
 <body>
 <div class="card">
   <p class="noprint">Skriv ut ett kort per deltaker (Ctrl+P). Kortet dekker alle tre etapper og blir to sider.</p>
-  <div class="row"><span>P910  <span class="y">MØRKETID</span></span><span class="c">03.12  BINGOKORT</span></div>
+  <div class="row top"><span>P910  <span class="y">MØRKETID</span></span><span class="c">03.12  BINGOKORT</span></div>
   <div class="band"><h1>BINGOKORT</h1></div>
 
   <p class="sub">Du scorer, ikke Claude. Et funn teller bare hvis du kan vise beviset selv, uten Claude.</p>
