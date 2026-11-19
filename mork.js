@@ -193,7 +193,25 @@
     opened = store.get(sk);
     if (!opened) { opened = Date.now(); store.set(sk, opened); }
     apnet.textContent = oslo(new Date(opened)).time.slice(0, 5);
+    store.set('side-' + apnet.getAttribute('data-stage'),
+              { url: location.origin + location.pathname, name: apnet.getAttribute('data-name') || '' });
   }
+
+  // ---- The stage list remembers stages you have opened, so a closed tab is not a lost stage. ----
+  // Names of locked stages are never in this page; they come from this browser's own visits.
+  Array.prototype.forEach.call(document.querySelectorAll('.tr li[data-stage]'), function (li) {
+    var k = parseInt(li.getAttribute('data-stage'), 10);
+    var next = store.get('side-' + (k + 1));
+    var me = k === 1 ? (next ? { url: ROOT, name: 'LETT' } : null) : store.get('side-' + k);
+    if (!me || !me.url) return;
+    var spans = li.querySelectorAll('span'), first = spans[0], last = li.lastElementChild;
+    first.textContent = '0' + k + ' ';
+    var a = document.createElement('a');
+    a.href = me.url; a.textContent = me.name || 'ETAPPE ' + k;
+    first.appendChild(a);
+    last.className = ''; last.textContent = next ? 'BESTÅTT' : 'ÅPEN';
+    li.className = next ? 'done' : 'open';
+  });
 
   // ---- The corrected delivery arrives by itself some minutes after stage 3 was first opened. ----
   var rettet = $('rettet');

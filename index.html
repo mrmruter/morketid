@@ -12,27 +12,11 @@
 <body>
 <div class="screen">
   <div class="row top"><span>P911  <span class="y">MØRKETID</span></span><span><span id="dato" class="c">--.--</span> <span id="klokke" class="y">--:--:--</span></span></div>
-  <div class="band"><h1>MØRKETID</h1><span id="subno">1/4</span></div>
+  <div class="band"><h1>MØRKETID</h1><span id="subno">1/3</span></div>
 
   <section class="sub on" data-key="Saken" aria-label="Saken">
     <p>Det er november.<br>Elbussene fra Haugåsen går tomme for strøm.<br>Ledelsen er sikker på at det er kulda.</p>
     <p class="y">Hva er det egentlig som skjer?</p>
-
-    <p class="c sol-t">SOLA OVER OSLO I DAG</p>
-    <div class="sky" id="sky" aria-hidden="true"></div>
-    <p class="row axis" aria-hidden="true"><span>00</span><span>06</span><span>12</span><span>18</span><span>24</span></p>
-    <p class="row"><span class="y" id="opp">OPP --:--</span><span class="y" id="ned">NED --:--</span><span class="c" id="lys"></span></p>
-    <p class="legend"><span><i class="sw y"></i>LYS</span><span><i class="sw r"></i>SKUMRING</span><span><i class="sw b"></i>BLÅTIME</span></p>
-
-    <ol class="tr" aria-label="Etapper">
-      <li class="open"><span>01 LETT</span><span>ÅPEN</span></li>
-      <li class="gate">---- port 1 ----</li>
-      <li><span>02 <span class="x" style="width:7ch" aria-label="skjult"></span></span><span class="r">LÅST</span></li>
-      <li class="gate">---- port 2 ----</li>
-      <li><span>03 <span class="x" style="width:8ch" aria-label="skjult"></span></span><span class="r">LÅST</span></li>
-    </ol>
-    <p>Saken har tre etapper. Mellom etappene står en port med ett spørsmål. Svarer du riktig, åpner neste etappe
-      seg.</p>
 
     <h2>ETAPPE 1: HVORFOR STÅR BUSSENE?</h2>
     <p>Finn ut hvorfor flere avganger har blitt innstilt i høst. Lever én graf og tre setninger som forklarer hvorfor.
@@ -40,13 +24,28 @@
     <a class="file" href="zips/morketid-lett.zip" download>▼ LAST NED morketid-lett.zip</a>
     <span class="fmeta" data-filemeta>etappe 1 · 2 kB · sha256 73c87389ba46</span>
     <ul class="idx" aria-label="Undersider">
-      <li><a href="#2"><span>Kom i gang</span><span>911/2</span></a></li>
-      <li><a href="#3"><span>Sjekk arbeidet ditt</span><span>911/3</span></a></li>
-      <li><a href="#4"><span>Port 1 og regler</span><span>911/4</span></a></li>
+      <li><a href="#2"><span>Kom i gang og steg for steg</span><span>911/2</span></a></li>
+      <li><a href="#3"><span>Port 1 og regler</span><span>911/3</span></a></li>
     </ul>
+
+    <ol class="tr" aria-label="Etapper">
+      <li class="open" data-stage="1"><span>01 LETT</span><span>ÅPEN</span></li>
+      <li class="gate">---- port 1 ----</li>
+      <li data-stage="2"><span>02 <span class="x" style="width:7ch" aria-label="skjult"></span></span><span class="r">LÅST</span></li>
+      <li class="gate">---- port 2 ----</li>
+      <li data-stage="3"><span>03 <span class="x" style="width:8ch" aria-label="skjult"></span></span><span class="r">LÅST</span></li>
+    </ol>
+    <p>Saken har tre etapper. Mellom etappene står en port med ett spørsmål. Svarer du riktig, åpner neste etappe
+      seg.</p>
+
+    <p class="c sol-t">SOLA OVER OSLO I DAG</p>
+    <div class="sky" id="sky" aria-hidden="true"></div>
+    <p class="row axis" aria-hidden="true"><span>00</span><span>06</span><span>12</span><span>18</span><span>24</span></p>
+    <p class="row"><span class="y" id="opp">OPP --:--</span><span class="y" id="ned">NED --:--</span><span class="c" id="lys"></span></p>
+    <p class="legend"><span><i class="sw y"></i>LYS</span><span><i class="sw r"></i>SKUMRING</span><span><i class="sw b"></i>BLÅTIME</span></p>
   </section>
 
-  <section class="sub" data-key="Start" aria-label="Kom i gang">
+  <section class="sub" data-key="Steg" aria-label="Kom i gang og steg for steg">
     <h2>KOM I GANG</h2>
     <ol class="s">
       <li><span class="no">1</span>Pakk ut zip-fila i en ny mappe (høyreklikk → Pakk ut alle).</li>
@@ -62,12 +61,6 @@
         <span class="prompt">Lag en graf over innstilte avganger per dag, med én linje per depot.</span></li>
       <li><span class="no">03</span>Be om en forklaring, og om hvor sikker Claude er.
         <span class="prompt">Hva tror du er årsaken? Hvor sikker er du, og hva bygger du det på?</span></li>
-    </ol>
-  </section>
-
-  <section class="sub" data-key="Sjekk" aria-label="Steg 4 til 7">
-    <h2>STEG FOR STEG, FORTS.</h2>
-    <ol class="s">
       <li><span class="no">04</span><span class="g">BE CLAUDE SJEKKE SITT EGET ARBEID.</span> Dette er det viktigste steget.
         <span class="prompt">Gå gjennom analysen din på nytt. Leste du alle radene riktig? Har du fjernet eller endret noe? Vis meg hvordan du sjekket det.</span></li>
       <li><span class="no">05</span><span class="g">SE DEG RUNDT.</span> Ikke alt du trenger, ligger i mappa. Claude vet bare
