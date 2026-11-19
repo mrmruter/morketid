@@ -109,6 +109,8 @@
     };
     document.addEventListener('keydown', function (e) {
       if (e.ctrlKey || e.metaKey || e.altKey) return;
+      var tag = (e.target && e.target.tagName) || '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (e.target && e.target.isContentEditable)) return;
       var n = parseInt(e.key, 10);
       if (n >= 1 && n <= subs.length) show(n, true);
     });
