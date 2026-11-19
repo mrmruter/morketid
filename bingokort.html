@@ -8,129 +8,238 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23000'/%3E%3Ctext x='8' y='13' font-family='monospace' font-weight='700' font-size='15' text-anchor='middle' fill='%23ff2222'%3E%23%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="style.css">
 <style>
-  /* Bingo card as a teletext page. On screen: black, 40 columns. On paper: white, wider, colour only in the bands. */
+  /* The bingo card as an on-screen teletext page. Everything is saved in this browser only. */
   .card { width: 40.6ch; max-width: 100%; margin: 0 auto; padding: 2.2em 0 3em; }
-  .noprint { color: var(--c); margin: 0 0 1.3em; }
-  .sub { color: var(--c); margin: 0 0 1.3em; }
+  .intro { color: var(--c); }
 
-  /* Dot leaders, as on an index page */
   .lead { display: flex; gap: 1ch; align-items: baseline; white-space: nowrap; }
   .lead .dots { flex: 1; overflow: hidden; color: var(--b); }
-  .lead .dots::after { content: "........................................................................................................................................................"; }
+  .lead .dots::after { content: "........................................................................................................................"; }
   .lead .v { color: var(--y); }
 
-  .bar { display: flex; justify-content: space-between; gap: 1ch; padding: 0 1ch; margin: 1.3em 0 .65em; color: #000; }
+  .bar { display: flex; justify-content: space-between; gap: 1ch; padding: 0 1ch; margin: 1.3em 0 .65em; color: #000; font-weight: 700; }
   .bar.lett { background: var(--g); } .bar.middels { background: var(--y); } .bar.mareritt { background: var(--r); }
+  .bar.locked { background: #333; color: var(--w); }
   .bar.blue { background: var(--b); color: var(--w); justify-content: center; }
-  .cols { display: none; }   /* column heads only on paper, where a finding is one row */
 
-  /* One finding: what + evidence + own check */
-  .find { display: grid; grid-template-columns: 3ch minmax(0, 1fr) 3ch; gap: 0 1ch; margin: 0 0 .65em; }
-  .find .no { color: var(--y); }
-  .find .what, .find .proof { grid-column: 2; }
-  .find .proof { color: var(--c); }
-  .find .chk { grid-column: 3; grid-row: 1 / span 2; align-self: end; color: var(--w); }
+  /* Inputs in teletext style */
+  .card input[type=text], .card input[type=number] { font: inherit; background: #000; color: var(--y); border: 0;
+    border-bottom: 2px solid var(--b); border-radius: 0; padding: 0 .3ch; min-width: 0; caret-color: var(--y); }
+  .card input:focus { outline: none; border-bottom-color: var(--y); }
+  .card input::placeholder { color: #555; }
+  .tick, .act { font: inherit; font-weight: 700; background: none; border: 0; padding: 0; cursor: pointer; color: var(--w); white-space: pre; }
+  .tick:focus-visible, .act:focus-visible { outline: 2px solid var(--w); }
+  .tick[aria-pressed="true"] { color: var(--g); }
+  .act { color: var(--m); }
+  .act:hover { background: var(--m); color: #000; }
+
+  .name { display: flex; gap: 1ch; align-items: baseline; margin: 0 0 .65em; }
+  .name input { flex: 1; }
+
+  /* One finding */
+  .find { display: grid; grid-template-columns: 3ch minmax(0, 1fr) auto; gap: .2em 1ch; margin: 0 0 .9em; align-items: baseline; }
+  .find .no { color: var(--y); font-weight: 700; }
+  .find input { width: 100%; }
+  .find .what { grid-column: 2; } .find .proof { grid-column: 2; color: var(--c); }
+  .find .ctl { grid-column: 3; grid-row: 1 / span 2; display: flex; flex-direction: column; align-items: flex-end; gap: .2em; }
+  .find.struck .what, .find.struck .proof { text-decoration: line-through; color: var(--r); }
+  .find.struck .no { color: var(--r); }
+
+  .cost { display: flex; gap: 1ch; align-items: baseline; margin: .2em 0 0; }
+  .cost label { color: var(--c); font-weight: 700; flex: 1; }
+  .cost input { width: 8ch; text-align: right; }
 
   .gate { border: 2px solid var(--c); padding: .3em 1ch; margin: .65em 0 0; }
   .gate .lead .v { color: var(--w); }
-  .gate .small { color: var(--c); }
 
   .check { border: 2px solid var(--m); padding: .65em 1ch; margin: 1.3em 0; }
-  .check h2 { color: var(--m); margin: 0 0 .4em; }
-  .check ul { list-style: none; padding: 0; margin: 0; }
-  .check li { padding-left: 4ch; text-indent: -4ch; margin: .2em 0; }
-  .check li::before { content: "[ ] "; white-space: pre; color: var(--w); }
+  .check h2 { color: var(--m); margin: 0 0 .4em; font-size: inherit; }
+  .check .row2 { display: grid; grid-template-columns: 4ch minmax(0, 1fr); gap: 0 .5ch; margin: .25em 0; }
+  .helper { color: var(--c); margin: .65em 0 .3em; }
+  .stepper { display: flex; gap: 1ch; align-items: baseline; flex-wrap: wrap; }
+  .stepper .n { color: var(--y); min-width: 2ch; text-align: right; }
 
-  .score { margin: 1.3em 0; }
-  .score .lead { margin: .5em 0; }
-  .score .sum { color: var(--y); }
-  .lead.cost { margin: .65em 0 0; } .lead.cost > span:first-child { color: var(--c); }
+  .score .lead { margin: .4em 0; }
+  .score .sum, .score .sum .v { color: var(--y); }
+  .result { background: #111; border-left: 3px solid var(--y); padding: .5em 1ch; margin: .65em 0; color: var(--w);
+            white-space: normal; overflow-wrap: anywhere; font-weight: 700; }
   .rules { color: var(--c); }
-
-  @page { size: A4; margin: 12mm; }
-  @media print {
-    html, body { background: #fff !important; color: #000 !important; }
-    .noprint { display: none; }
-    .card { width: auto; padding: 0; font-size: 10.5pt; line-height: 1.35; }
-    .card * { color: #000 !important; }
-    .band, .bar { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .band { background: #00f !important; }
-    .band h1, .band > span, .bar.blue, .bar.blue * { color: #fff !important; }
-    .top > span:first-child::before { color: #f22 !important; }
-    .lead .dots { color: #888 !important; }
-    .find { grid-template-columns: 3ch minmax(0, 1.1fr) minmax(0, 1fr) 8ch; align-items: end; min-height: 8.5mm;
-            margin: 0; border-bottom: 1px dotted #999; }
-    .find .what { grid-column: 2; } .find .proof { grid-column: 3; } .find .chk { grid-column: 4; grid-row: 1; text-align: center; }
-    .cols span:last-child { text-align: center; }
-    .find .lbl { display: none; }
-    .cols { display: grid; grid-template-columns: 3ch minmax(0, 1.1fr) minmax(0, 1fr) 8ch; gap: 0 1ch; }
-    .gate, .check { border-color: #000 !important; }
-    .check li::before { color: #000 !important; }
-    section.stage { break-inside: avoid; }
-    section.stage.mareritt { break-before: page; }
-    .check, .score { break-inside: avoid; }
-  }
+  .muted { color: #888; }
 </style>
 </head>
 <body>
 <div class="card">
-  <p class="noprint">Skriv ut ett kort per deltaker (Ctrl+P). Kortet dekker alle tre etapper og blir to sider.</p>
-  <div class="row top"><span>P910  <span class="y">MØRKETID</span></span><span class="c">03.12  BINGOKORT</span></div>
+  <div class="row top"><span>P910  <a class="y" href="index.html">MØRKETID</a></span><span><span id="dato" class="c">--.--</span> <span id="klokke" class="y">--:--:--</span></span></div>
   <div class="band"><h1>BINGOKORT</h1></div>
 
-  <p class="sub">Du scorer, ikke Claude. Et funn teller bare hvis du kan vise beviset selv, uten Claude.</p>
-  <div class="lead"><span>NAVN</span><span class="dots"></span></div>
+  <p class="intro">Du scorer, ikke Claude. Et funn teller bare hvis du kan vise beviset selv, uten Claude. Kortet lagres
+    bare i denne nettleseren. Ha det åpent i en egen fane.</p>
+  <div class="name"><label for="navn" class="y">NAVN</label><input type="text" id="navn" data-k="navn" maxlength="40"
+    placeholder="valgfritt" autocomplete="off"></div>
 
   <div id="stages" data-lett="4" data-middels="7" data-mareritt="12"></div>
 
   <section class="check" aria-label="Sendesjekk">
     <h2>SENDESJEKK · FØR DU SENDER SVARET</h2>
-    <ul>
-      <li>Ingen kortnumre eller annet som kan peke ut en person</li>
-      <li>Hvert tall i svaret har jeg sjekket mot kilden selv</li>
-      <li>Anbefalingen følger av det jeg faktisk har vist</li>
-    </ul>
+    <div class="row2"><button class="tick" type="button" data-k="send-1" aria-pressed="false">[ ]</button><span>Ingen kortnumre eller annet som kan peke ut en person</span></div>
+    <div class="row2"><button class="tick" type="button" data-k="send-2" aria-pressed="false">[ ]</button><span>Hvert tall i svaret har jeg sjekket mot kilden selv</span></div>
+    <div class="row2"><button class="tick" type="button" data-k="send-3" aria-pressed="false">[ ]</button><span>Anbefalingen følger av det jeg faktisk har vist</span></div>
+    <p class="helper">Fylles ut av hjelperen:</p>
+    <div class="row2"><button class="tick" type="button" data-k="pers" aria-pressed="false">[ ]</button><span>Personopplysninger i svaret <span class="r">(−2)</span></span></div>
+    <div class="stepper"><span>Ekte data ryddet bort <span class="r">(−1 hver)</span></span>
+      <button class="act" type="button" data-step="-1" aria-label="En mindre">[−]</button><span class="n" id="ryddet-n">0</span>
+      <button class="act" type="button" data-step="1" aria-label="En til">[+]</button></div>
   </section>
 
   <section class="score" aria-label="Poeng">
     <div class="bar blue"><span>POENG</span></div>
-    <div class="lead"><span>VERIFISERTE FUNN   +1 HVER</span><span class="dots"></span><span class="v">____</span></div>
-    <div class="lead"><span>PORTER             +2 HVER</span><span class="dots"></span><span class="v">____</span></div>
-    <div class="lead"><span>EKTE DATA RYDDET BORT    -1</span><span class="dots"></span><span class="v">____</span></div>
-    <div class="lead"><span>PERSONOPPLYSNINGER I SVAR -2</span><span class="dots"></span><span class="v">____</span></div>
-    <div class="lead sum"><span>SUM</span><span class="dots"></span><span class="v">____</span></div>
-    <div class="lead"><span>KOSTNAD, ALLE ØKTER</span><span class="dots"></span><span class="v">$____</span></div>
+    <div class="lead"><span>VERIFISERTE FUNN   +1</span><span class="dots"></span><span class="v" id="s-funn">0</span></div>
+    <div class="lead"><span>PORTER             +2</span><span class="dots"></span><span class="v" id="s-port">0</span></div>
+    <div class="lead"><span>RYDDET BORT        −1</span><span class="dots"></span><span class="v" id="s-rydd">0</span></div>
+    <div class="lead"><span>PERSONOPPLYSN.     −2</span><span class="dots"></span><span class="v" id="s-pers">0</span></div>
+    <div class="lead sum"><span>SUM</span><span class="dots"></span><span class="v" id="s-sum">0</span></div>
+    <div class="lead"><span>KOSTNAD, ALLE ØKTER</span><span class="dots"></span><span class="v" id="s-kost">$0</span></div>
+
+    <div class="bar blue"><span>RESULTATLINJE</span></div>
+    <p class="rules">Når fasilitator sier stopp: kopier linja og lim den inn der fasilitator ber om det.</p>
+    <p class="result" id="resultat">…</p>
+    <p><button class="act" type="button" id="kopier">[KOPIER RESULTATLINJA]</button></p>
   </section>
 
-  <p class="rules">Hjelperne tar stikkprøver: de peker på ett funn, og du har 60 sekunder på å vise beviset uten Claude.
-    Klarer du det ikke, strykes funnet. Ikke alt som ser rart ut, er feil.</p>
-  <div class="bar blue"><span>ALL DATA ER OPPDIKTET</span></div>
+  <p class="rules">Hjelperne tar stikkprøver: de peker på ett funn du har sjekket, og du har 60 sekunder på å vise beviset
+    uten Claude. Klarer du det ikke, trykker hjelperen STRYK. Ikke alt som ser rart ut, er feil.</p>
+  <p class="muted"><button class="act" type="button" id="nullstill">[NULLSTILL KORTET]</button> All data er oppdiktet.</p>
 </div>
 
+<script src="mork.js"></script>
 <script>
-  (function () {
-    var host = document.getElementById('stages');
-    var stages = [['lett', 'ETAPPE 1 · LETT', 'PORT 1'], ['middels', 'ETAPPE 2 · MIDDELS', 'PORT 2'],
-                  ['mareritt', 'ETAPPE 3 · MARERITT', null]];
-    stages.forEach(function (s) {
-      var n = parseInt(host.getAttribute('data-' + s[0]), 10), rows = '';
-      for (var i = 1; i <= n; i++) {
-        rows += '<div class="find"><span class="no">' + (i < 10 ? '0' : '') + i + '</span>' +
-          '<div class="what lead"><span class="lbl">FUNN</span><span class="dots"></span></div>' +
-          '<div class="proof lead"><span class="lbl">BEVIS</span><span class="dots"></span></div>' +
-          '<span class="chk">[ ]</span></div>';
-      }
-      var sec = document.createElement('section');
-      sec.className = 'stage ' + s[0];
-      sec.innerHTML = '<div class="bar ' + s[0] + '"><span>' + s[1] + '</span><span>' + n + ' TING</span></div>' +
-        '<div class="cols"><span></span><span>HVA FANT DU?</span><span>BEVIS: FIL, RAD, ARK</span><span>SJEKKET</span></div>' +
-        rows +
-        '<div class="lead cost"><span>KOSTNAD DENNE ØKTA (/usage → Cost)</span><span class="dots"></span><span class="v">$____</span></div>' +
-        (s[2] ? '<div class="gate"><div class="lead"><span>' + s[2] + ' ÅPNET KL.</span><span class="dots"></span>' +
-          '<span class="v">[ ] HJELP</span></div><span class="small">Klokkeslettet står i den blå linja på neste etappe.</span></div>' : '');
+(function () {
+  'use strict';
+  var KEY = 'morketid-kort';
+  function get(k) { try { return JSON.parse(localStorage.getItem('morketid-' + k)); } catch (e) { return null; } }
+  var data = {};
+  try { data = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { data = {}; }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) { /* private mode */ } }
+  var fmt = null;
+  try { fmt = new Intl.DateTimeFormat('nb-NO', { timeZone: 'Europe/Oslo', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }); } catch (e) {}
+  function hhmm(ms) { return fmt ? fmt.format(new Date(ms)) : new Date(ms).toTimeString().slice(0, 5); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  // Build the three stages. A later stage stays closed until this browser has opened it.
+  var host = document.getElementById('stages');
+  var stages = [['lett', 1, 'LETT'], ['middels', 2, null], ['mareritt', 3, null]];
+  stages.forEach(function (s) {
+    var lvl = s[0], k = s[1], n = parseInt(host.getAttribute('data-' + lvl), 10) || 0;
+    var side = k > 1 ? get('side-' + k) : { name: s[2] };
+    var sec = document.createElement('section');
+    sec.className = 'stage ' + lvl;
+    if (!side) {
+      sec.innerHTML = '<div class="bar locked"><span>ETAPPE ' + k + ' · LÅST</span><span>' + n + ' TING</span></div>' +
+        '<p class="muted">Åpnes når du kommer gjennom port ' + (k - 1) + '.</p>';
       host.appendChild(sec);
+      return;
+    }
+    var html = '<div class="bar ' + lvl + '"><span>ETAPPE ' + k + ' · ' + esc(side.name || '') + '</span><span>' + n + ' TING</span></div>';
+    for (var i = 1; i <= n; i++) {
+      var id = lvl + '-' + i, nn = (i < 10 ? '0' : '') + i;
+      html += '<div class="find" data-id="' + id + '"><span class="no">' + nn + '</span>' +
+        '<input class="what" type="text" data-k="' + id + '-funn" placeholder="Hva fant du?" aria-label="Funn ' + nn + '" autocomplete="off">' +
+        '<input class="proof" type="text" data-k="' + id + '-bevis" placeholder="Bevis: fil, rad, ark" aria-label="Bevis ' + nn + '" autocomplete="off">' +
+        '<span class="ctl"><button class="tick" type="button" data-k="' + id + '-ok" aria-pressed="false" title="Sjekket selv">[ ]</button>' +
+        '<button class="act stryk" type="button" data-k="' + id + '-stryk" aria-pressed="false" title="Hjelperen stryker funnet">STRYK</button></span></div>';
+    }
+    html += '<div class="cost"><label for="kost-' + k + '">KOSTNAD DENNE ØKTA ($)</label><input type="number" min="0" step="0.01" inputmode="decimal" id="kost-' + k + '" data-k="kost-' + k + '" placeholder="0,00"></div>';
+    if (k < 3) {
+      var next = get('apnet-' + (k + 1));
+      html += '<div class="gate"><div class="lead"><span>PORT ' + k + ' ÅPNET KL.</span><span class="dots"></span>' +
+        '<span class="v">' + (next ? hhmm(next) : '--:--') + '</span></div>' +
+        '<div class="lead"><span class="c">Fikk lenken av en hjelper</span><span class="dots"></span>' +
+        '<button class="tick" type="button" data-k="hjelp-' + k + '" aria-pressed="false">[ ]</button></div></div>';
+    }
+    sec.innerHTML = html;
+    host.appendChild(sec);
+  });
+
+  // Wire every field to storage.
+  Array.prototype.forEach.call(document.querySelectorAll('[data-k]'), function (el) {
+    var k = el.getAttribute('data-k');
+    if (el.tagName === 'INPUT') {
+      if (data[k] != null) el.value = data[k];
+      el.addEventListener('input', function () { data[k] = el.value; save(); update(); });
+    } else {
+      var on = !!data[k];
+      el.setAttribute('aria-pressed', on ? 'true' : 'false');
+      paint(el, on);
+      el.addEventListener('click', function () {
+        var now = el.getAttribute('aria-pressed') !== 'true';
+        data[k] = now; save();
+        el.setAttribute('aria-pressed', now ? 'true' : 'false');
+        paint(el, now);
+        update();
+      });
+    }
+  });
+  function paint(el, on) {
+    if (el.classList.contains('stryk')) {
+      el.textContent = on ? 'STRØKET' : 'STRYK';
+      el.closest('.find').classList.toggle('struck', on);
+    } else {
+      el.textContent = on ? '[X]' : '[ ]';
+    }
+  }
+  var ryddet = document.getElementById('ryddet-n');
+  Array.prototype.forEach.call(document.querySelectorAll('[data-step]'), function (b) {
+    b.addEventListener('click', function () {
+      data.ryddet = Math.max(0, (data.ryddet || 0) + parseInt(b.getAttribute('data-step'), 10));
+      save(); update();
     });
-  })();
+  });
+
+  function num(v) { var x = parseFloat(String(v || '').replace(',', '.')); return isFinite(x) && x > 0 ? x : 0; }
+  function update() {
+    var funn = 0;
+    Array.prototype.forEach.call(document.querySelectorAll('.find'), function (f) {
+      var id = f.getAttribute('data-id');
+      if ((data[id + '-funn'] || '').trim() && data[id + '-ok'] && !data[id + '-stryk']) funn++;
+    });
+    var times = [], hjelp = 0, porter = 0;
+    [2, 3].forEach(function (k) {
+      var t = get('apnet-' + k);
+      if (!t) return;
+      times.push('P' + (k - 1) + ' ' + hhmm(t));
+      if (data['hjelp-' + (k - 1)]) hjelp++; else porter++;
+    });
+    var rydd = data.ryddet || 0, pers = data.pers ? 1 : 0;
+    var sum = funn + 2 * porter - rydd - 2 * pers;
+    var kost = num(data['kost-1']) + num(data['kost-2']) + num(data['kost-3']);
+    var kostTxt = '$' + kost.toFixed(2).replace('.', ',');
+    ryddet.textContent = rydd;
+    document.getElementById('s-funn').textContent = funn;
+    document.getElementById('s-port').textContent = 2 * porter;
+    document.getElementById('s-rydd').textContent = rydd ? '−' + rydd : '0';
+    document.getElementById('s-pers').textContent = pers ? '−2' : '0';
+    document.getElementById('s-sum').textContent = sum;
+    document.getElementById('s-kost').textContent = kostTxt;
+    var navn = (data.navn || '').trim();
+    document.getElementById('resultat').textContent = 'MØRKETID' + (navn ? ' | ' + navn : '') +
+      ' | porter: ' + (times.length ? times.join(', ') : 'ingen') + (hjelp ? ' (hjelp: ' + hjelp + ')' : '') +
+      ' | verifisert: ' + funn + ' | ryddet: ' + rydd + ' | pers: ' + pers + ' | sum: ' + sum + ' | kost: ' + kostTxt;
+  }
+  update();
+
+  document.getElementById('kopier').addEventListener('click', function () {
+    var b = this, text = document.getElementById('resultat').textContent;
+    var done = function () { b.textContent = '[KOPIERT]'; setTimeout(function () { b.textContent = '[KOPIER RESULTATLINJA]'; }, 1500); };
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, function () {});
+    else { var r = document.createRange(); r.selectNodeContents(document.getElementById('resultat'));
+           var s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+  });
+  document.getElementById('nullstill').addEventListener('click', function () {
+    if (!confirm('Tømme bingokortet? Funn, kostnader og avkrysninger slettes fra denne nettleseren.')) return;
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    location.reload();
+  });
+})();
 </script>
 </body>
 </html>
