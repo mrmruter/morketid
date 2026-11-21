@@ -26,8 +26,7 @@
   .find .no { color: var(--mu); font: 14px var(--mono); padding-top: .6em; }
   .find .what, .find .proof { grid-column: 2; }
   .find .proof { font-size: 15px; }
-  .find .ctl { grid-column: 3; grid-row: 1 / span 2; display: flex; flex-direction: column; align-items: center; gap: .5em; padding-top: .25em; }
-  .find.struck .what, .find.struck .proof { text-decoration: line-through; color: var(--red); }
+  .find .ctl { grid-column: 3; grid-row: 1 / span 2; padding-top: .25em; }
 
   .tick { width: 30px; height: 30px; border: 1px solid var(--mu); border-radius: 4px; background: none; color: var(--ok);
           font: 700 18px/1 var(--sans); cursor: pointer; padding: 0; flex: none; }
@@ -35,7 +34,6 @@
   .act { font: 13px var(--sans); background: none; border: 0; padding: 0; color: var(--mu); cursor: pointer; text-decoration: underline;
          text-underline-offset: 3px; }
   .act:hover { color: var(--amb); }
-  .stryk[aria-pressed="true"] { color: var(--red); }
 
   .cost { display: grid; grid-template-columns: minmax(0, 1fr) 7.5em; gap: .8em; align-items: center; margin: 1.2em 0 0; }
   .cost label { font-size: 15px; color: var(--mu); }
@@ -43,19 +41,13 @@
   .gaterow { display: flex; justify-content: space-between; gap: 1em; align-items: center; flex-wrap: wrap; font-size: 15px;
              color: var(--mu); border-top: 1px dashed var(--line); margin: 1em 0 0; padding-top: .8em; }
   .gaterow .v { color: var(--tx); font-family: var(--mono); }
-  .gaterow label { display: flex; gap: .6em; align-items: center; }
 
   .box { border: 1px solid var(--line); padding: 1em; margin: 3em 0 0; }
   .row2 { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: .8em; align-items: center; margin: 0 0 .6em; }
-  .helper { font-size: 14px; color: var(--mu); margin: 1em 0 .6em; }
-  .stepper { display: flex; gap: .8em; align-items: center; flex-wrap: wrap; }
-  .stepper .n { font-family: var(--mono); min-width: 2ch; text-align: center; }
-  .stepper .act { text-decoration: none; border: 1px solid var(--line); border-radius: 4px; width: 30px; height: 30px; font-size: 16px; }
 
   .score { margin: 3em 0 0; }
   .line { display: flex; justify-content: space-between; gap: 1em; padding: .35em 0; border-bottom: 1px solid var(--line); }
   .line .v { font-family: var(--mono); }
-  .line.sum { font-weight: 600; } .line.sum .v { color: var(--amb); }
   .result { font: 14px/1.6 var(--mono); background: var(--board); border-left: 3px solid var(--amb); padding: .7em .9em; margin: 1em 0;
             overflow-wrap: anywhere; }
   .copybtn { font: 600 15px var(--sans); min-height: 44px; padding: 0 16px; background: var(--amb); color: #141414; border: 0;
@@ -70,8 +62,8 @@
     <nav><span>Bingokort</span><span id="klokke">--:--</span></nav>
   </header>
 
-  <p class="intro">Du scorer, ikke Claude. Et funn teller bare hvis du kan vise beviset selv, uten Claude. Kortet lagres bare i
-    denne nettleseren. Ha det åpent i en egen fane.</p>
+  <p class="intro">Kortet er ditt eget, og det er ingen poeng. Noter hva du finner og hvordan du har sjekket det selv, uten
+    Claude. Haken betyr «dette kan jeg vise». Kortet lagres bare i denne nettleseren. Ha det åpent i en egen fane.</p>
   <p class="name"><label for="navn">Navn (valgfritt)</label><input type="text" id="navn" data-k="navn" maxlength="40" autocomplete="off"></p>
 
   <div id="stages" data-lett="4" data-middels="8" data-mareritt="12"></div>
@@ -81,31 +73,25 @@
     <div class="row2"><button class="tick" type="button" data-k="send-1" aria-pressed="false" aria-label="Ingen personopplysninger"></button><span>Ingen kortnumre eller annet som kan peke ut en person</span></div>
     <div class="row2"><button class="tick" type="button" data-k="send-2" aria-pressed="false" aria-label="Tallene er sjekket"></button><span>Hvert tall i svaret har jeg sjekket mot kilden selv</span></div>
     <div class="row2"><button class="tick" type="button" data-k="send-3" aria-pressed="false" aria-label="Anbefalingen følger"></button><span>Anbefalingen følger av det jeg faktisk har vist</span></div>
-    <p class="helper">Fylles ut av hjelperen:</p>
-    <div class="row2"><button class="tick" type="button" data-k="pers" aria-pressed="false" aria-label="Personopplysninger i svaret"></button><span>Personopplysninger i svaret (−2)</span></div>
-    <div class="stepper"><span>Ekte data ryddet bort (−1 hver)</span>
-      <button class="act" type="button" data-step="-1" aria-label="En mindre">−</button><span class="n" id="ryddet-n">0</span>
-      <button class="act" type="button" data-step="1" aria-label="En til">+</button></div>
   </section>
 
-  <section class="score" aria-labelledby="h-poeng">
-    <h2 id="h-poeng">Poeng</h2>
-    <div class="line"><span>Verifiserte funn, +1</span><span class="v" id="s-funn">0</span></div>
-    <div class="line"><span>Porter, +2</span><span class="v" id="s-port">0</span></div>
-    <div class="line"><span>Ryddet bort, −1</span><span class="v" id="s-rydd">0</span></div>
-    <div class="line"><span>Personopplysninger, −2</span><span class="v" id="s-pers">0</span></div>
-    <div class="line sum"><span>Sum</span><span class="v" id="s-sum">0</span></div>
+  <section class="score" aria-labelledby="h-status">
+    <h2 id="h-status">Status</h2>
+    <div class="line"><span>Etappe</span><span class="v" id="s-etappe">1</span></div>
+    <div class="line"><span>Funn notert</span><span class="v" id="s-notert">0</span></div>
+    <div class="line"><span>Sjekket selv</span><span class="v" id="s-funn">0</span></div>
     <div class="line"><span>Kostnad, alle økter</span><span class="v" id="s-kost">$0</span></div>
 
     <h2 style="margin-top:2.4em">Resultatlinje</h2>
-    <p class="small">Når fasilitator sier stopp: kopier linja og lim den inn der fasilitator ber om det.</p>
+    <p class="small">Når fasilitator sier stopp: kopier linja og lim den inn der fasilitator ber om det. Det er frivillig,
+      og navnet kan stå tomt. Linja brukes bare til å se hvordan verkstedet fungerte.</p>
     <p class="result" id="resultat">…</p>
     <p><button class="copybtn" type="button" id="kopier">Kopier resultatlinja</button></p>
   </section>
 
   <footer class="foot">
-    <p>Hjelperne tar stikkprøver: de peker på ett funn du har sjekket, og du har 60 sekunder på å vise beviset uten Claude.
-      Klarer du det ikke, trykker hjelperen Stryk. Ikke alt som ser rart ut, er feil.</p>
+    <p>Hjelperne kan peke på et funn med hake og spørre hvordan du vet det. Vis dem fila, raden eller arket, uten Claude.
+      Det er ingen eksamen: poenget er å merke forskjellen på å vite og å tro. Ikke alt som ser rart ut, er feil.</p>
     <p><button class="act" type="button" id="nullstill">Nullstill kortet</button> · All data er oppdiktet.</p>
   </footer>
 </div>
@@ -145,14 +131,12 @@
       html += '<div class="find" data-id="' + id + '"><span class="no">' + nn + '</span>' +
         '<input class="what" type="text" data-k="' + id + '-funn" placeholder="Hva fant du?" aria-label="Funn ' + nn + '" autocomplete="off">' +
         '<input class="proof" type="text" data-k="' + id + '-bevis" placeholder="Bevis: fil, rad, ark" aria-label="Bevis ' + nn + '" autocomplete="off">' +
-        '<span class="ctl"><button class="tick" type="button" data-k="' + id + '-ok" aria-pressed="false" title="Sjekket selv" aria-label="Funn ' + nn + ' sjekket selv"></button>' +
-        '<button class="act stryk" type="button" data-k="' + id + '-stryk" aria-pressed="false" title="Hjelperen stryker funnet">Stryk</button></span></div>';
+        '<span class="ctl"><button class="tick" type="button" data-k="' + id + '-ok" aria-pressed="false" title="Sjekket selv" aria-label="Funn ' + nn + ' sjekket selv"></button></span></div>';
     }
     html += '<div class="cost"><label for="kost-' + k + '">Kostnad denne økta ($), fra /usage</label><input type="text" inputmode="decimal" autocomplete="off" id="kost-' + k + '" data-k="kost-' + k + '" placeholder="0,00"></div>';
     if (k < 3) {
       var next = get('apnet-' + (k + 1));
-      html += '<div class="gaterow"><span>Port ' + k + ' åpnet kl. <span class="v">' + (next ? hhmm(next) : '--:--') + '</span></span>' +
-        '<label>Fikk lenken av en hjelper <button class="tick" type="button" data-k="hjelp-' + k + '" aria-pressed="false" aria-label="Fikk lenken av en hjelper"></button></label></div>';
+      html += '<div class="gaterow"><span>Port ' + k + ' åpnet kl. <span class="v">' + (next ? hhmm(next) : '--:--') + '</span></span></div>';
     }
     sec.innerHTML = html;
     host.appendChild(sec);
@@ -177,51 +161,34 @@
       });
     }
   });
-  function paint(el, on) {
-    if (el.classList.contains('stryk')) {
-      el.textContent = on ? 'Strøket' : 'Stryk';
-      el.closest('.find').classList.toggle('struck', on);
-    } else {
-      el.textContent = on ? '✓' : '';
-    }
-  }
-  var ryddet = document.getElementById('ryddet-n');
-  Array.prototype.forEach.call(document.querySelectorAll('[data-step]'), function (b) {
-    b.addEventListener('click', function () {
-      data.ryddet = Math.max(0, (data.ryddet || 0) + parseInt(b.getAttribute('data-step'), 10));
-      save(); update();
-    });
-  });
+  function paint(el, on) { el.textContent = on ? '✓' : ''; }
 
   function num(v) { var x = parseFloat(String(v || '').replace(',', '.')); return isFinite(x) && x > 0 ? x : 0; }
   function update() {
-    var funn = 0;
+    var notert = 0, funn = 0;
     Array.prototype.forEach.call(document.querySelectorAll('.find'), function (f) {
       var id = f.getAttribute('data-id');
-      if ((data[id + '-funn'] || '').trim() && data[id + '-ok'] && !data[id + '-stryk']) funn++;
+      if (!(data[id + '-funn'] || '').trim()) return;
+      notert++;
+      if (data[id + '-ok']) funn++;
     });
-    var times = [], hjelp = 0, porter = 0;
+    var times = [];
     [2, 3].forEach(function (k) {
       var t = get('apnet-' + k);
-      if (!t) return;
-      times.push('P' + (k - 1) + ' ' + hhmm(t));
-      if (data['hjelp-' + (k - 1)]) hjelp++; else porter++;
+      if (t) times.push('P' + (k - 1) + ' ' + hhmm(t));
     });
-    var rydd = data.ryddet || 0, pers = data.pers ? 1 : 0;
-    var sum = funn + 2 * porter - rydd - 2 * pers;
-    var kost = num(data['kost-1']) + num(data['kost-2']) + num(data['kost-3']);
-    var kostTxt = '$' + kost.toFixed(2).replace('.', ',');
-    ryddet.textContent = rydd;
+    var kost = [1, 2, 3].map(function (k) { return num(data['kost-' + k]); });
+    var fmtK = function (x) { return '$' + x.toFixed(2).replace('.', ','); };
+    var total = kost[0] + kost[1] + kost[2];
+    document.getElementById('s-etappe').textContent = 1 + times.length;
+    document.getElementById('s-notert').textContent = notert;
     document.getElementById('s-funn').textContent = funn;
-    document.getElementById('s-port').textContent = 2 * porter;
-    document.getElementById('s-rydd').textContent = rydd ? '−' + rydd : '0';
-    document.getElementById('s-pers').textContent = pers ? '−2' : '0';
-    document.getElementById('s-sum').textContent = sum;
-    document.getElementById('s-kost').textContent = kostTxt;
+    document.getElementById('s-kost').textContent = fmtK(total);
     var navn = (data.navn || '').trim();
     document.getElementById('resultat').textContent = 'MØRKETID' + (navn ? ' | ' + navn : '') +
-      ' | porter: ' + (times.length ? times.join(', ') : 'ingen') + (hjelp ? ' (hjelp: ' + hjelp + ')' : '') +
-      ' | verifisert: ' + funn + ' | ryddet: ' + rydd + ' | pers: ' + pers + ' | sum: ' + sum + ' | kost: ' + kostTxt;
+      ' | etappe: ' + (1 + times.length) + ' | porter: ' + (times.length ? times.join(', ') : 'ingen') +
+      ' | funn: ' + notert + ' (sjekket selv: ' + funn + ')' +
+      ' | kost: ' + kost.slice(0, 1 + times.length).map(fmtK).join(' / ') + ' = ' + fmtK(total);
   }
   update();
 
