@@ -19,7 +19,7 @@ a:hover { text-decoration-color: var(--amb); }
 .mu { color: var(--mu); }
 .am { color: var(--amb); }
 
-/* Top line: name left, bingo card and clock right */
+/* Top line: name left, clock right */
 .top { display: flex; justify-content: space-between; align-items: baseline; gap: 1em; font-size: 14px; color: var(--mu);
        margin: 0 0 9vh; }
 .top .name { letter-spacing: .2em; }

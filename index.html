@@ -13,7 +13,7 @@
 <div class="wrap">
   <header class="top">
     <span class="name"><b>#</b>MØRKETID</span>
-    <nav><a href="bingokort.html" target="_blank">Bingokort ↗</a><span id="klokke">--:--</span></nav>
+    <nav><span id="klokke">--:--</span></nav>
   </header>
 
   <div class="board" role="img" aria-label="Avgangstavle på Haugåsen senter: linje 922 er innstilt.">
@@ -38,8 +38,7 @@
 
   <section aria-labelledby="h-oppgave">
     <h2 id="h-oppgave">Etappe 1</h2>
-    <p>Finn ut hvorfor flere avganger har blitt innstilt i høst. Lever én graf og tre setninger som forklarer hvorfor.
-      Det er <span data-count="lett">4</span> ting å finne.</p>
+    <p>Finn ut hvorfor flere avganger har blitt innstilt i høst. Lever én graf og tre setninger som forklarer hvorfor.</p>
     <a class="dl" href="zips/morketid-lett.zip" download>Last ned datapakken</a>
     <span class="fmeta" data-filemeta>etappe 1 · 2 kB · sha256 0deea9637a65</span>
   </section>
@@ -54,7 +53,7 @@
     </ol>
 
     <details>
-      <summary>Steg for steg, med forslag du kan kopiere</summary>
+      <summary>Metoden steg for steg, med forslag du kan kopiere</summary>
       <ol class="s">
         <li>Bli kjent med dataene først.
           <span class="prompt">Les filene i mappa og fortell meg hva de inneholder. Ikke analyser ennå.</span></li>
@@ -83,13 +82,15 @@
     <details id="regler">
       <summary>Slik fungerer det</summary>
       <dl class="ru">
-        <dt>Tempo</dt><dd>Det er ingen konkurranse og ingen poeng. Gå så langt du rekker, i ditt eget tempo. Etappe 1 gjort
-          grundig er bedre enn etappe 3 gjort raskt.</dd>
-        <dt>Port</dt><dd>Ett svar åpner neste etappe. Tre feil på rad gir to minutters pause.</dd>
-        <dt>Funn</dt><dd>Noter det du finner på <a href="bingokort.html" target="_blank">bingokortet</a>, og hak av når du kan
-          vise beviset selv, uten Claude. Hjelperne kan spørre hvordan du vet det.</dd>
+        <dt>Tempo</dt><dd>Dette er ingen konkurranse. Gå så langt du rekker, i ditt eget tempo. Etappene finnes bare for at
+          ingen skal gå tom for oppgaver. Etappe 1 gjort grundig er bedre enn etappe 3 gjort raskt.</dd>
+        <dt>Metode</dt><dd>Start med spørsmålet, ikke med dataene. Bli kjent med dataene, lag en forklaring og test den.
+          Be Claude vise hvordan den kom fram til svaret.</dd>
+        <dt>Sjekk selv</dt><dd>Du vet noe først når du kan vise det selv, uten Claude: fila, raden, tallet. Hjelperne kan
+          spørre hvordan du vet det.</dd>
         <dt>Ikke alt</dt><dd>Ikke alt som ser rart ut, er feil. Pass på at ekte data ikke blir «ryddet bort».</dd>
-        <dt>Kostnad</dt><dd>Før du forlater en økt: skriv <kbd>/usage</kbd> og før Cost-tallet under Session på <a href="bingokort.html" target="_blank">bingokortet</a>. Hver etappe er en ny økt.</dd>
+        <dt>Port</dt><dd>Ett svar åpner neste etappe. Tre feil på rad gir to minutters pause.</dd>
+        <dt>Kostnad</dt><dd>Skriv <kbd>/usage</kbd> før du forlater en økt, så ser du hva den kostet. Hver etappe er en ny økt.</dd>
       </dl>
     </details>
   </section>

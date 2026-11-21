@@ -127,7 +127,7 @@
     });
   });
 
-  // ---- When was this stage first opened? Shown on the page, written on the bingo card. ----
+  // ---- When was this stage first opened? Shown on the page; the stage 3 reveal timer counts from it. ----
   var opened = null, apnet = $('apnet');
   if (apnet) {
     var sk = 'apnet-' + apnet.getAttribute('data-stage');
